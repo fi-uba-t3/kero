@@ -22,7 +22,9 @@ Vagrant.configure(2) do |config|
 
 
   config.vm.provider "virtualbox" do |vb|
+    vb.customize ['modifyvm', :id, '--nictype1', 'virtio']
     vb.memory = "1024"
+    vb.cpus = "2"
     vb.linked_clone = true
   end
 
@@ -39,7 +41,7 @@ Vagrant.configure(2) do |config|
       end
 
       box.vm.provision "shell" do |s|
-        s.privileged = false
+        s.privileged = true
         s.path = "provision.sh"
       end
     end

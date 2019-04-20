@@ -1,6 +1,6 @@
 ---
 os:
-  image: "ubuntu/trusty64"
+  image: "ubuntu/xenial64"
 
 nodes:
   - ip: 10.0.0.1
