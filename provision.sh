@@ -16,8 +16,15 @@ if [[ $(hostname) == "node-1" ]]; then
     sudo --user=vagrant mkdir -p /home/vagrant/.kube
     cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
     chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
+
+    echo "KUBELET_EXTRA_ARGS=--node-ip 10.0.0.2" >> /var/lib/kubelet/kubeadm-flags.env
+    sudo systemctl daemon-reload
+    sudo systemctl restart kubelet
 fi
 
 if [[ $(hostname) == "node-2" ]]; then
-    sudo bash /vagrant/cache/join.sh
+    echo "$(cat /vagrant/cache/join.sh) --apiserver-advertise-address=10.0.0.3" | sudo bash -s
+    echo "KUBELET_EXTRA_ARGS=--node-ip 10.0.0.3" >> /var/lib/kubelet/kubeadm-flags.env
+    sudo systemctl daemon-reload
+    sudo systemctl restart kubelet
 fi
