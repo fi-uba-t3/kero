@@ -45,7 +45,6 @@ Vagrant.configure(2) do |config|
         s.path = "provision.sh"
       end
 
-      box.vm.provision :reload
     end
   end
 
