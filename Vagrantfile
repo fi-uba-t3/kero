@@ -32,8 +32,12 @@ Vagrant.configure(2) do |config|
   nodes.each do |node|
     index = (yaml['nodes'].index(node)+1).to_s
     name = BASENAME+index
+
+    node_ip = node['ip']
+    node_role = node['role']
+
     config.vm.define name do |box|
-      box.vm.network "private_network", ip: node['ip']
+      box.vm.network "private_network", ip: node_ip
       box.vm.hostname = name
 
       box.vm.provider "virtualbox" do |vb|
@@ -41,11 +45,14 @@ Vagrant.configure(2) do |config|
       end
 
       box.vm.provision "shell" do |s|
+        s.env = {
+            "NODE_IP"   => node_ip,
+            "NODE_ROLE" => node_role
+        }
         s.privileged = true
         s.path = "provision.sh"
       end
 
     end
   end
-
 end

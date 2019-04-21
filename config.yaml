@@ -4,5 +4,11 @@ os:
 
 nodes:
   - ip: 10.0.0.2
+    role: master
   - ip: 10.0.0.3
+    role: master
+  - ip: 10.0.0.4
+    role: slave
+  - ip: 10.0.0.5
+    role: slave
 
