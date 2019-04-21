@@ -44,6 +44,8 @@ Vagrant.configure(2) do |config|
         s.privileged = true
         s.path = "provision.sh"
       end
+
+      box.vm.provision :reload
     end
   end
 
