@@ -29,6 +29,8 @@ Run `vagrant status` to get see which virtual machines are currently running.
 
 Run `vagrant ssh node-x` to ssh into the machine x.
 
+**IMPORTANT**: Vagrant virtual machines share with the host the directory where the Vagrantfile is. This direcotry is mounted in `/vagrant` on every VM.
+
 Run `vagrant provision` to re-run provisioning scripts on all VMs. Be aware that
 the VM is not formatted or deleted, so any thing that is already running may
 interfere and cause the script to fail.
