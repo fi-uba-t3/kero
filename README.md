@@ -13,7 +13,7 @@ You will need:
 
 ## Starting up the cluster
 
-Run `vagrant up` to bring up the cluster. The first time it will create the VMs
+Run `vagrant up` to ~~make your computer catch fire~~ bring up the cluster. The first time it will create the VMs
 one by one. Take into account that it may take a while since it needs to
 download the base boxes (os.image in `config.yaml`) and run the `provision.sh`
 script which also get some things from the apt repositories.
