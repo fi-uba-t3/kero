@@ -67,3 +67,5 @@ ssh -o StrictHostKeyChecking=no -i <IdentityFile> -L <host-port>:<target-ip>:<ta
 
 Run `vagrant destroy` to fully wipe all VMs for good.
 
+**IMPORTANT**: after a `vagrant destroy` of the first machine, make sure to also delete the `cache/` directory, otherwise new VMs will be stuck forever in the Pre-flight step of kubeadm.
+
