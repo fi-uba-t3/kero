@@ -13,7 +13,9 @@ check_plugin()
 
 yaml = YAML.load_file('./config.yaml')
 nodes = yaml['nodes']
-IMAGE = yaml['os']['image']
+IMAGE = yaml['machine']['image']
+MEMORY = yaml['machine']['memory']
+CPUS = yaml['machine']['cpus']
 BASENAME = "node-"
 
 Vagrant.configure(2) do |config|
@@ -23,8 +25,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
     vb.customize ['modifyvm', :id, '--nictype1', 'virtio']
-    vb.memory = "1024"
-    vb.cpus = "2"
+    vb.memory = MEMORY
+    vb.cpus = CPUS
     vb.linked_clone = true
   end
 
