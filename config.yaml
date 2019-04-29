@@ -1,6 +1,8 @@
 ---
-os:
+machine:
   image: "ubuntu/xenial64"
+  memory: "1024"
+  cpus: "2"
 
 nodes:
   - ip: 10.0.0.2
@@ -11,4 +13,5 @@ nodes:
     role: slave
   - ip: 10.0.0.5
     role: slave
+
 
