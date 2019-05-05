@@ -41,9 +41,9 @@ kind: Service
 metadata:
   labels:
     application: headless-vnc
-  name: headless-vnc
+  name: headless-vnc-svc
 spec:
-  externalName: headless-vnc
+  externalName: headless-vnc-svc
   ports:
   - name: http-port-tcp
     protocol: TCP

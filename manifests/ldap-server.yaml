@@ -24,6 +24,8 @@ spec:
         - containerPort: 80
       - name: ldap-host
         env:
+        - name: LDAP_READONLY_USER
+          value: "true"
         - name: LDAP_ADMIN_PASSWORD
           value: admin
         - name: LDAP_DOMAIN
@@ -31,6 +33,9 @@ spec:
         - name: LDAP_ORGANISATION
           value: FIUBA
         image: osixia/openldap
+        ports:
+        - containerPort: 389
+        - containerPort: 636
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -38,15 +43,25 @@ kind: Service
 metadata:
   labels:
     application: ldap
-  name: ldap
+  name: ldap-svc
 spec:
-  externalName: ldap
+  externalName: ldap-svc
   ports:
   - name: admin-panel-tcp
     protocol: TCP
     port: 80
     targetPort: 80
     nodePort: 30666
+  - name: host-ldap-ssl
+    protocol: TCP
+    port: 636
+    targetPort: 636
+    nodePort: 30636
+  - name: host-ldap-tcp
+    protocol: TCP
+    port: 389
+    targetPort: 389
+    nodePort: 30389
   selector:
     application: ldap
   type: NodePort
