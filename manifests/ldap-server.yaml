@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ldap
+  labels:
+    io.kompose.service: ldap-admin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: ldap
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: ldap-admin 
+        env:
+        - name: PHPLDAPADMIN_HTTPS
+          value: "false"
+        - name: PHPLDAPADMIN_LDAP_HOSTS
+          value: 127.0.0.1
+        image: osixia/phpldapadmin
+        ports:
+        - containerPort: 80
+      - name: ldap-host
+        env:
+        - name: LDAP_ADMIN_PASSWORD
+          value: admin
+        - name: LDAP_DOMAIN
+          value: fiuba.com
+        - name: LDAP_ORGANISATION
+          value: FIUBA
+        image: osixia/openldap
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: ldap
+  name: ldap
+spec:
+  externalName: ldap
+  ports:
+  - name: admin-panel-tcp
+    protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30666
+  selector:
+    application: ldap
+  type: NodePort
