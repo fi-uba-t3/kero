@@ -16,7 +16,8 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: headless-vnc
-        image: consol/centos-xfce-vnc
+        # image: consol/centos-xfce-vnc
+        image: juanfresia/taller3-test-vnc
         imagePullPolicy: Always
         args:
           ### make normal UI startup to connect via: oc rsh <pod-name> bash
