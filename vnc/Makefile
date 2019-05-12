@@ -8,4 +8,12 @@ build:
 
 push:
 	sudo docker push juanfresia/taller3-test-vnc
-.PHONY: build
+.PHONY: push
+
+build-test:
+	sudo docker build -t juanfresia/taller3-test-vnc:test .
+.PHONY: build-test
+
+push-test:
+	sudo docker push juanfresia/taller3-test-vnc:test
+.PHONY: push-test

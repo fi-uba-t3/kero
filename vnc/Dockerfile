@@ -7,6 +7,7 @@ RUN yum install -y openldap-clients nss-pam-ldapd authconfig \
     && yum clean all
 
 COPY nslcd.conf /etc/nslcd.conf
+RUN chmod 0600 /etc/nslcd.conf
 
 RUN authconfig --updateall --enableldap --enableldapauth --enablemkhomedir
 
