@@ -22,7 +22,7 @@ fi
 $DEBUG git clone https://github.com/kubernetes-incubator/external-storage
  
 # Label storage nodes appropriately
-STORAGE_NODES=$(kubectl get nodes --no-headers | grep storage | awk '{print $1}')
+STORAGE_NODES=$(kubectl get nodes --no-headers | grep -v master | awk '{print $1}')
 for node in $STORAGE_NODES; do
   $DEBUG kubectl label nodes $node storagenode=glusterfs
 done
