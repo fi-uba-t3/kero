@@ -55,3 +55,6 @@ test/vagrant-spec/boxes/*.box
 # Vagrant provisioning temp stuff
 /cache
 /disks
+
+# JM stuff
+/vim
