@@ -25,7 +25,7 @@ spec:
         livenessProbe:
           tcpSocket:
             port: 5901
-          initialDelaySeconds: 1
+          initialDelaySeconds: 30
           timeoutSeconds: 1
         ### checks if http-vnc connection is working
         readinessProbe:
@@ -33,7 +33,7 @@ spec:
             path: /
             port: 6901
             scheme: HTTP
-          initialDelaySeconds: 1
+          initialDelaySeconds: 30
           timeoutSeconds: 1
 ---
 apiVersion: v1
