@@ -4,7 +4,7 @@ function usage() {
     echo
     echo "Starts a new vnc server for a specific user"
     echo
-    echo -e "\tusage: $(basename $0) username user_id"
+    echo -e "\tusage: $(basename "$0") username user_id"
     echo
     exit 1
 }
@@ -24,9 +24,9 @@ echo
 
 export VNC_PW="${VNC_PASS}"
 
-export VNC_HTTP_PORT=$((31001+${VNC_USERID}))
-export VNC_PORT=$((30001+${VNC_USERID}))
+export VNC_HTTP_PORT=$((31001 + VNC_USERID))
+export VNC_PORT=$((30001 + VNC_USERID))
 echo "Connect to port: ${VNC_HTTP_PORT}"
 
 ## TODO: absolute path for template (maybe embedded here?)
-cat template.yaml | envsubst | kubectl apply -f -
+envsubst < template.yaml # | kubectl apply -f -
