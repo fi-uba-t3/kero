@@ -1,0 +1,18 @@
+#! /bin/bash
+
+function usage() {
+    echo
+    echo "Stops the vnc server of a specific user"
+    echo
+    echo -e "\tusage: $(basename $0) username"
+    echo
+    exit 1
+}
+
+if [[ -z $1 ]]; then
+    usage
+fi
+
+export VNC_USERNAME=$1
+
+cat template.yaml | envsubst | kubectl delete -f -

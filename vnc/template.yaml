@@ -1,0 +1,62 @@
+#### POD config (run one time)
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: headless-vnc-${VNC_USERNAME}
+  labels:
+    application: headless-vnc-${VNC_USERNAME}
+spec:
+  # 1 Pods should exist at all times.
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: headless-vnc-${VNC_USERNAME}
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: headless-vnc-${VNC_USERNAME}
+        # image: consol/centos-xfce-vnc
+        image: juanfresia/taller3-test-vnc
+        imagePullPolicy: Always
+        env:
+          - name: VNC_USER
+            value: ${VNC_USERNAME}
+          - name: VNC_PW
+            value: ${VNC_PW}
+        livenessProbe:
+          tcpSocket:
+            port: 5901
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        ### checks if http-vnc connection is working
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 6901
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: headless-vnc-${VNC_USERNAME}
+  name: headless-vnc-svc-${VNC_USERNAME}
+spec:
+  externalName: headless-vnc-svc-${VNC_USERNAME}
+  ports:
+  - name: http-port-tcp
+    protocol: TCP
+    port: 6901
+    targetPort: 6901
+    nodePort: ${VNC_HTTP_PORT}
+  - name: vnc-port-tcp
+    protocol: TCP
+    port: 5901
+    targetPort: 5901
+    nodePort: ${VNC_PORT}
+  selector:
+    application: headless-vnc-${VNC_USERNAME}
+  type: NodePort
