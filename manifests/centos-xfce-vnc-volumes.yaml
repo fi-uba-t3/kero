@@ -18,6 +18,11 @@ spec:
       - name: headless-vnc
         image: consol/centos-xfce-vnc
         imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: gluster-shared
+            mountPath: "/mnt/shared"
+          - name: gluster-home
+            mountPath: "/home/my-user/"
         args:
           ### make normal UI startup to connect via: oc rsh <pod-name> bash
           #- '--tail-log'
@@ -35,6 +40,13 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 1
           timeoutSeconds: 1
+      volumes:
+      - name: gluster-shared
+        persistentVolumeClaim:
+          claimName: shared-claim
+      - name: gluster-home
+        persistentVolumeClaim:
+          claimName: home-claim
 ---
 apiVersion: v1
 kind: Service
