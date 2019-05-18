@@ -7,7 +7,7 @@
 DEBUG=""
  
 # The host directory to store brick files
-BRICK_HOSTDIR="/tmp"
+BRICK_HOSTDIR="/etc/kubernetes/brick"
  
 # Read in the desired number of storage nodes from first arg
 NODE_COUNT="$1"

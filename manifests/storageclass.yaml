@@ -5,4 +5,5 @@ metadata:
 provisioner: gluster.org/glusterfs-simple
 parameters:
   forceCreate: "true"
+  volumeType: "replica 2"
   brickrootPaths: "10.0.0.4:/etc/kubernetes/brick/,10.0.0.5:/etc/kubernetes/brick/"
