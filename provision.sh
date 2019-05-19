@@ -16,9 +16,13 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
         # Otherwise, we create a new cluster.
         mkdir -p /vagrant/cache
 
+        # Generate and store a token for bootstrapping
+        KUBEADM_TOKEN=$(kubeadm token generate)
+
         # The IP of the first node will be the service IP for the apiserver
         # service. TODO: replace this with a LB
-        sed -e "s/{{NODE_IP}}/${NODE_IP}/" /vagrant/kubeadm-config.yaml > /tmp/kubeadm-config.yaml
+        # It is replaced in the template from NODE_IP env var.
+        envsubst < /vagrant/kubeadm-config.yaml > /tmp/kubeadm-config.yaml
         sudo kubeadm init --config=/tmp/kubeadm-config.yaml \
             --experimental-upload-certs | tee /vagrant/cache/kubeadm-init.log
 
@@ -27,7 +31,7 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
 
         # Leave instructions to other masters and nodes on how to join the cluster.
         cat /vagrant/cache/kubeadm-init.log | grep "experimental-control" -B2 > /vagrant/cache/join-master.sh
-        kubeadm token create --print-join-command > /vagrant/cache/join.sh
+        kubeadm token create --ttl 0s --print-join-command > /vagrant/cache/join.sh
 
     fi
 
