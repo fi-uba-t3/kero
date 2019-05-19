@@ -10,7 +10,7 @@ fi
 NODE=$1
 
 ## Add a little flavor
-ADJ=("great" "miserable" "pathetic" "heroic" "short")
+ADJ=("great" "miserable" "pathetic" "heroic" "short" "promiscuous")
 ADJ_LEN=${#ADJ[*]}
 RANDOM=$(date +%N)
 FLAVOR=${ADJ[$RANDOM % $ADJ_LEN]}
@@ -24,4 +24,12 @@ fi
 kubectl delete node $NODE
 kubectl get pods -n kube-system -o wide | grep $NODE | cut -f1 -d' '| xargs kubectl delete pod -n kube-system --force --grace-period=0
 
-echo "Node was destroyed, you may need to run etcdctl member remove if the node was a master"
+NODE_CODE=$(sudo -i etcdctl --insecure-skip-tls-verify member list | grep $NODE | cut -d "," -f 1)
+sudo -i etcdctl --insecure-skip-tls-verify member remove $NODE_CODE
+
+## Add even more flavor
+ADJ=("destroyed" "killed" "pulverized" "executed" "carried to heaven")
+ADJ_LEN=${#ADJ[*]}
+FLAVOR=${ADJ[$RANDOM % $ADJ_LEN]}
+
+echo "Node ${NODE} was ${FLAVOR} successfully."

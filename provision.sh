@@ -2,10 +2,12 @@
 
 set -exuo
 
+sudo service kubelet stop || true
+sudo rm -rf /etc/kubernetes/manifests/ /etc/kubernetes/kubelet.conf /etc/kubernetes/bootstrap-kubelet.conf /var/lib/etcd/
+
 /vagrant/scripts/docker.sh
 /vagrant/scripts/kubeadm.sh
 /vagrant/scripts/etcdctl.sh
-
 
 if [[ "${NODE_ROLE}" == "master" ]]; then
 
