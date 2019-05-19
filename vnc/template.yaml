@@ -18,7 +18,7 @@ spec:
       - name: headless-vnc-${VNC_USERNAME}
         # image: consol/centos-xfce-vnc
         image: juanfresia/taller3-test-vnc
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
           - name: VNC_USER
             value: ${VNC_USERNAME}
