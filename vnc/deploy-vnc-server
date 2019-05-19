@@ -29,4 +29,4 @@ export VNC_PORT=$((30001 + VNC_USERID))
 echo "Connect to port: ${VNC_HTTP_PORT}"
 
 ## TODO: absolute path for template (maybe embedded here?)
-envsubst < template.yaml # | kubectl apply -f -
+envsubst < template.yaml | kubectl apply -f -
