@@ -4,6 +4,7 @@ set -exuo
 
 /vagrant/scripts/docker.sh
 /vagrant/scripts/kubeadm.sh
+/vagrant/scripts/etcdctl.sh
 
 
 if [[ "${NODE_ROLE}" == "master" ]]; then
