@@ -4,7 +4,7 @@ function usage() {
     echo
     echo "Stops the vnc server of a specific user"
     echo
-    echo -e "\tusage: $(basename "$0") username"
+    echo -e "\tusage: $(basename "$0") cn"
     echo
     exit 1
 }
@@ -15,4 +15,21 @@ fi
 
 export VNC_USERNAME=$1
 
+echo -n "Password for ${VNC_USERNAME}:"
+read -sr VNC_PASS
+echo
+
+## Using LDAP to validate password and get user id
+LDAP_CLUSTER_IP=$(kubectl get svc | grep ldap-svc | awk {'print $3'})
+LDAP_UID=$(curl -s "ldap://${LDAP_CLUSTER_IP}:389/cn=${VNC_USERNAME},ou=People,dc=fiuba,dc=com" -u "cn=${VNC_USERNAME},ou=People,dc=fiuba,dc=com":${VNC_PASS} | grep "uid")
+
+if [[ -z "$LDAP_UID" ]]; then
+    echo "Error: Invalid credentials"
+    exit 1
+fi
+
+VNC_USERNAME=$(echo $LDAP_UID | cut -d " " -f 2)
+
 envsubst < template.yaml | kubectl delete -f -
+
+echo "Deleted"
