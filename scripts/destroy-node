@@ -1,0 +1,27 @@
+#! /bin/bash
+
+set +x
+
+if [[ -z $1 ]]; then
+  echo "You must give a node name to destroy."
+  exit 1
+fi
+
+NODE=$1
+
+## Add a little flavor
+ADJ=("great" "miserable" "pathetic" "heroic" "short")
+ADJ_LEN=${#ADJ[*]}
+RANDOM=$(date +%N)
+FLAVOR=${ADJ[$RANDOM % $ADJ_LEN]}
+
+read -p "You are about to end the ${FLAVOR} life of ${NODE}. Are you sure? " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 0
+fi
+
+kubectl delete node $NODE
+kubectl get pods -n kube-system -o wide | grep $NODE | cut -f1 -d' '| xargs kubectl delete pod -n kube-system --force --grace-period=0
+
+echo "Node was destroyed, you may need to run etcdctl member remove if the node was a master"

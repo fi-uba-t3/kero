@@ -15,5 +15,7 @@ nodes:
       - size: 1 # Size in Gb
   - ip: 10.0.0.5
     role: slave
+  - ip: 10.0.0.6
+    role: master
 
 

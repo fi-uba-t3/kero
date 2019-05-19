@@ -1,0 +1,4 @@
+#! /bin/bash
+
+yes y | sudo kubeadm reset
+sudo /vagrant/cache/join-master.sh
