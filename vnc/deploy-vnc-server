@@ -4,7 +4,7 @@ function usage() {
     echo
     echo "Starts a new vnc server for a specific user"
     echo
-    echo -e "\tusage: $(basename "$0") cn "
+    echo -e "\tusage: $(basename "$0") userid "
     echo
     exit 1
 }
@@ -21,15 +21,12 @@ echo
 
 ## Using LDAP to validate password and get user id
 LDAP_CLUSTER_IP=$(kubectl get svc | grep ldap-svc | awk {'print $3'})
-LDAP_UID=$(curl -s "ldap://${LDAP_CLUSTER_IP}:389/cn=${VNC_USERNAME},ou=People,dc=fiuba,dc=com" -u "cn=${VNC_USERNAME},ou=People,dc=fiuba,dc=com":${VNC_PASS} | grep "uid")
+VNC_USERID=$(curl -s "ldap://${LDAP_CLUSTER_IP}:389/uid=${VNC_USERNAME},ou=People,dc=fiuba,dc=com" -u "uid=${VNC_USERNAME},ou=People,dc=fiuba,dc=com":${VNC_PASS} | grep "uidNumber:" | awk '{print $2}')
 
-if [[ -z "$LDAP_UID" ]]; then
+if [[ -z "$VNC_USERID" ]]; then
     echo "Error: Invalid credentials"
     exit 1
 fi
-
-VNC_USERID=$(echo $LDAP_UID | cut -d " " -f 4)
-VNC_USERNAME=$(echo $LDAP_UID | cut -d " " -f 2)
 
 ## echo "Welcome ${VNC_USERNAME} (${VNC_USERID})"
 
@@ -41,6 +38,6 @@ export VNC_PORT=$((30001 + VNC_USERID))
 ## TODO: absolute path for template (maybe embedded here?)
 envsubst < template.yaml | kubectl apply -f -
 
-VNC_PODNAME=$(kubectl get pods | grep "vnc-jfresia" | cut -d " " -f 1)
+VNC_PODNAME=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | cut -d " " -f 1)
 VNC_IP=$(kubectl describe pod $VNC_PODNAME | grep "Node:" | cut -d "/" -f 2)
 echo "Connect to ${VNC_IP}:${VNC_HTTP_PORT}"
