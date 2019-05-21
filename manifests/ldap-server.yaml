@@ -36,6 +36,18 @@ spec:
         ports:
         - containerPort: 389
         - containerPort: 636
+        volumeMounts:
+          - name: gluster-sldap
+            mountPath: "/etc/ldap/slapd.d"
+          - name: gluster-ldap
+            mountPath: "/var/lib/ldap"
+      volumes:
+      - name: gluster-ldap
+        persistentVolumeClaim:
+          claimName: ldap-claim
+      - name: gluster-sldap
+        persistentVolumeClaim:
+          claimName: sldap-claim
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -65,3 +77,29 @@ spec:
   selector:
     application: ldap
   type: NodePort
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ldap-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sldap-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
