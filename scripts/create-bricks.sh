@@ -1,7 +1,7 @@
 #!/bin/bash
-# Run only on storage nodes
+set -x
 
-sudo su
+# Run only on storage nodes
 mkdir -p /etc/kubernetes/brick
 mkfs.ext4 /dev/sdc
 mount /dev/sdc /etc/kubernetes/brick

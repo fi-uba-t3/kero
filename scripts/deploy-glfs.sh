@@ -2,7 +2,16 @@
 #
 # Usage: ./deploy-glfs.sh <number_of_storage_nodes>
 #
- 
+
+function usage() {
+    echo "Usage: $0 <number_of_storage_nodes>"
+    exit 1
+}
+
+if [[ -z "$1" ]]; then
+    usage
+fi
+
 # DEBUG ONLY: Set this to "echo" to neuter the script and perform a dry-run
 DEBUG=""
  
