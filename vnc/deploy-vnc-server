@@ -37,6 +37,7 @@ export VNC_PORT=$((30001 + VNC_USERID))
 
 ## TODO: absolute path for template (maybe embedded here?)
 envsubst < template.yaml | kubectl apply -f -
+envsubst < pvc-template.yaml | kubectl apply -f -
 
 VNC_PODNAME=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | cut -d " " -f 1)
 VNC_IP=$(kubectl describe pod $VNC_PODNAME | grep "Node:" | cut -d "/" -f 2)

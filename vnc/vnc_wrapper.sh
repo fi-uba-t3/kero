@@ -7,7 +7,7 @@ sudo nslcd -d > /var/log/nslcd.log 2>&1 &
 echo "nslcd running on $!"
 
 ## Wait for nslcd to start
-sleep 10
+sleep 5
 
 ## Set up entry in /etc/passwd to avoid appearing as default user
 VNC_USER_ID=$(id -u ${VNC_USER})

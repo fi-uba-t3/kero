@@ -19,6 +19,11 @@ spec:
         # image: consol/centos-xfce-vnc
         image: juanfresia/taller3-test-vnc
         imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: gluster-shared
+            mountPath: "/mnt/shared"
+          - name: gluster-home
+            mountPath: "/home/users/${VNC_USERNAME}/"
         env:
           - name: VNC_USER
             value: ${VNC_USERNAME}
@@ -37,6 +42,13 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 30
           timeoutSeconds: 1
+      volumes:
+      - name: gluster-shared
+        persistentVolumeClaim:
+          claimName: shared-claim
+      - name: gluster-home
+        persistentVolumeClaim:
+          claimName: home-claim-${VNC_USERNAME}
 ---
 apiVersion: v1
 kind: Service

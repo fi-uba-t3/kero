@@ -3,6 +3,8 @@
 # Usage: ./deploy-glfs.sh <number_of_storage_nodes>
 #
 
+set +x
+
 function usage() {
     echo "Usage: $0 <number_of_storage_nodes>"
     exit 1
@@ -27,9 +29,6 @@ if [ "$NODE_COUNT" -lt 2 ]; then
   exit 1
 fi
  
-# Clone external-storage repo for NFS provisioner templates
-$DEBUG git clone https://github.com/kubernetes-incubator/external-storage
- 
 # Label storage nodes appropriately
 STORAGE_NODES=$(kubectl get nodes --no-headers | grep -v master | awk '{print $1}')
 for node in $STORAGE_NODES; do
@@ -37,7 +36,7 @@ for node in $STORAGE_NODES; do
 done
  
 # Create the GLFS cluster
-$DEBUG kubectl apply -f external-storage/gluster/glusterfs/deploy/glusterfs-daemonset.yaml
+$DEBUG kubectl apply -f ./glusterfs/glusterfs-daemonset.yaml
  
 # Wait for the GLFS cluster to come up
 count="$(kubectl get pods --no-headers | grep glusterfs | grep -v provisioner | awk '{print $3}' | grep Running | wc -l)"
@@ -88,13 +87,13 @@ parameters:
   forceCreate: \"true\"
   volumeType: \"replica 2\"
   brickrootPaths: \"$BRICK_PATHS\"
-" > external-storage/gluster/glusterfs/deploy/storageclass.yaml
+" > ./glusterfs/storageclass.yaml
  
 # Create the storage class
-$DEBUG kubectl apply -f external-storage/gluster/glusterfs/deploy/storageclass.yaml
+$DEBUG kubectl apply -f ./glusterfs/storageclass.yaml
  
 # Bind the necessary ServiceAccount / ClusterRole
-$DEBUG kubectl apply -f external-storage/gluster/glusterfs/deploy/rbac.yaml
+$DEBUG kubectl apply -f ./glusterfs/rbac.yaml
  
 # Create the GLFS Simple Provisioner
-$DEBUG kubectl apply -f external-storage/gluster/glusterfs/deploy/deployment.yaml
+$DEBUG kubectl apply -f ./glusterfs/deployment.yaml
