@@ -14,5 +14,10 @@ VNC_USER_ID=$(id -u ${VNC_USER})
 VNC_USER_GROUPID=$(id -g ${VNC_USER})
 echo "${VNC_USER}:x:${VNC_USER_ID}:${VNC_USER_GROUPID}:${VNC_USER}:/home/users/${VNC_USER}:/bin/bash" >> /etc/passwd
 
+## Set up permissions for shared and home
+su -m ${VNC_USER} -c "date"
+chown ${VNC_USER_ID} /home/users/${VNC_USER}
+chgrp 500 /mnt/shared
+
 echo "Running vnc_startup"
 su -m ${VNC_USER} /dockerstartup/vnc_startup.sh "$@"
