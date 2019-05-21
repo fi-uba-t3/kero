@@ -44,6 +44,7 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
 fi
 
 if [[ "${NODE_ROLE}" == "slave" ]]; then
+    /vagrant/scripts/crate-bricks.sh
     echo "$(cat /vagrant/cache/join.sh) --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
 fi
 

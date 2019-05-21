@@ -16,16 +16,21 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: headless-vnc
-        # image: consol/centos-xfce-vnc
-        image: juanfresia/taller3-test-vnc
+        image: consol/centos-xfce-vnc
         imagePullPolicy: IfNotPresent
-        env:
-          - name: VNC_USER
-            value: jfresia
+        volumeMounts:
+          - name: gluster-shared
+            mountPath: "/mnt/shared"
+          - name: gluster-home
+            mountPath: "/home/my-user/"
+        args:
+          ### make normal UI startup to connect via: oc rsh <pod-name> bash
+          #- '--tail-log'
+        ### checks that vnc server is up and running
         livenessProbe:
           tcpSocket:
             port: 5901
-          initialDelaySeconds: 30
+          initialDelaySeconds: 1
           timeoutSeconds: 1
         ### checks if http-vnc connection is working
         readinessProbe:
@@ -33,17 +38,24 @@ spec:
             path: /
             port: 6901
             scheme: HTTP
-          initialDelaySeconds: 30
+          initialDelaySeconds: 1
           timeoutSeconds: 1
+      volumes:
+      - name: gluster-shared
+        persistentVolumeClaim:
+          claimName: shared-claim
+      - name: gluster-home
+        persistentVolumeClaim:
+          claimName: home-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     application: headless-vnc
-  name: headless-vnc-svc
+  name: headless-vnc
 spec:
-  externalName: headless-vnc-svc
+  externalName: headless-vnc
   ports:
   - name: http-port-tcp
     protocol: TCP
