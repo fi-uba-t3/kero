@@ -62,7 +62,16 @@ New or repaired machines can join the cluster by running the installer.
 ## Desktops
 To emulate a desktop computer, we make use of the Virtual Network Computing ????
 
+Users can use their home directory or access files on the sharedfs as long as they have permissions that allow them to.
+
 ## Storage
+Machines hard disks are partitioned in two. The first, and smaller partition, is reserved for the underlying OS and data needed to run node components. The bigger partition or brick is dedicated to save files from the users homes and shared filesystem service.
+
+### Shared file system
+To implement our shared file system, we use GlusterFS. [Gluster](https://www.gluster.org/) is a scalable, distributed file system that aggregates disk storage resources from multiple servers into a single global namespace.
+
+A Gluster replicated volume is used to persist homes and sharedfs. Exact copies of the data are maintained on the bricks. 
+The number of replicas can be decided by the client (Default is 5). So we need to have at least two bricks to create a volume with 2 replicas or a minimum of three bricks to create a volume of 3 replicas. 
+One major advantage of such volume type is that even if one brick fails the data can still be accessed from its replicated bricks. Such a volume is used for better reliability and data redundancy.
 
 ## Users
-
