@@ -2,6 +2,8 @@
 
 The main requirement of our project is to provide various services using desktop computers with different specifications. To the end user, all computers look the same. On the inside, we combine a well known container orchestrator to deploy services and desktops for our users.
 
+![](/docs/architecture.png)
+
 ## Container orchestrator
 To deploy our services and the employees desktops, we use an orchestrator named [Kubernetes (K8s)](https://kubernetes.io/). K8s is an open-source system for automating deployment, scaling, and management of containerized applications.
 But above all, K8s is self-healing. It restarts containers that fail, replaces and reschedules containers when nodes die, kills containers that don’t respond to your user-defined health check, and doesn’t advertise them to clients until they are ready to serve.
