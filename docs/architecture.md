@@ -47,7 +47,7 @@ Logically, each controller is a separate process, but to reduce complexity, they
 These controllers include:
 * Node Controller: Responsible for noticing and responding when nodes go down.
 * Replication Controller: Responsible for maintaining the correct number of pods for every replication controller object in the system.
-* Endpoints Controller: Populates the Endpoints object (that is, joins Services & Pods).
+* Endpoints Controller: Populates the Endpoints object (that is, joins services & pods).
 * Service Account & Token Controllers: Create default accounts and API access tokens for new namespaces.
 
 ### Meta orchestrator
@@ -62,7 +62,7 @@ The meta orchestrator service is deployed on K8s and monitors master node health
 New or repaired machines can join the cluster by running the installer.
 
 ## Desktops
-To emulate a desktop computer, we make use of the Virtual Network Computing ????
+To emulate a desktop computer, we make use of Virtual Network Computing.
 
 Users can use their home directory or access files on the sharedfs as long as they have permissions that allow them to.
 
@@ -73,7 +73,15 @@ Machines hard disks are partitioned in two. The first, and smaller partition, is
 To implement our shared file system, we use GlusterFS. [Gluster](https://www.gluster.org/) is a scalable, distributed file system that aggregates disk storage resources from multiple servers into a single global namespace.
 
 A Gluster replicated volume is used to persist homes and sharedfs. Exact copies of the data are maintained on the bricks. 
-The number of replicas can be decided by the client (Default is 5). So we need to have at least two bricks to create a volume with 2 replicas or a minimum of three bricks to create a volume of 3 replicas. 
+The number of replicas can be decided by the client (default is 5). So we need to have at least two bricks to create a volume with 2 replicas or a minimum of three bricks to create a volume of 3 replicas. 
 One major advantage of such volume type is that even if one brick fails the data can still be accessed from its replicated bricks. Such a volume is used for better reliability and data redundancy.
 
 ## Users
+All users need to be previously added on the system by a system administrator in order to use the many services like their virtual desktops. In order to achieve so, a directory service must also be deployed within the Kubernetes cluster.
+
+### Directory service
+The directory service implemented is based on a standard [OpenLDAP](http://www.openldap.org/) with a [phpLDAPadmin](http://phpldapadmin.sourceforge.net/wiki/index.php/Main_Page) administrator graphic panel. To add or remove a particular user record, the administrator can simply log in via the administrator panel and add/remove that entry.
+
+Since the directory is also persisted via GlusterFS, even if the machine running the directory service fails, one will be relaunched and all data would be retrieved from any replica.
+
+
