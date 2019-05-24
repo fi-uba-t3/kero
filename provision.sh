@@ -2,8 +2,8 @@
 
 set -exuo
 
-sudo service kubelet stop || true
-sudo rm -rf /etc/kubernetes/manifests/ /etc/kubernetes/kubelet.conf /etc/kubernetes/bootstrap-kubelet.conf /var/lib/etcd/
+# sudo service kubelet stop || true
+# sudo rm -rf /etc/kubernetes/manifests/ /etc/kubernetes/kubelet.conf /etc/kubernetes/bootstrap-kubelet.conf /var/lib/etcd/
 
 /vagrant/scripts/docker.sh
 /vagrant/scripts/kubeadm.sh
@@ -44,7 +44,7 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
 fi
 
 if [[ "${NODE_ROLE}" == "slave" ]]; then
-    /vagrant/scripts/crate-bricks.sh
+    /vagrant/scripts/create-bricks.sh
     echo "$(cat /vagrant/cache/join.sh) --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
 fi
 

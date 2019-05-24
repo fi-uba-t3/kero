@@ -38,7 +38,16 @@ export VNC_PORT=$((30001 + VNC_USERID))
 ## TODO: absolute path for template (maybe embedded here?)
 envsubst < template.yaml | kubectl apply -f -
 envsubst < pvc-template.yaml | kubectl apply -f -
+kubectl apply -f pvc-shared.yaml
+
+VNC_STATUS=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | awk '{print $3}')
+while [ $VNC_STATUS != "Running" ]; do
+    echo "Waiting for VNC deployment (status: ${VNC_STATUS})"
+    sleep 7
+    VNC_STATUS=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | awk '{print $3}')
+done
 
 VNC_PODNAME=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | cut -d " " -f 1)
 VNC_IP=$(kubectl describe pod $VNC_PODNAME | grep "Node:" | cut -d "/" -f 2)
+sleep 6
 echo "Connect to ${VNC_IP}:${VNC_HTTP_PORT}"
