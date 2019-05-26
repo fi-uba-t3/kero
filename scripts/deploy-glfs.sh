@@ -6,7 +6,7 @@
 set +x
 
 function usage() {
-    echo "Usage: $0 <number_of_storage_nodes>"
+    echo "Usage: $0 replicas"
     exit 1
 }
 
@@ -14,14 +14,14 @@ if [[ -z "$1" ]]; then
     usage
 fi
 
+STORAGE_NODES=$(kubectl get nodes --no-headers | awk '{print $1}')
+NODE_COUNT=$(echo $STORAGE_NODES | wc -w)
+
 # DEBUG ONLY: Set this to "echo" to neuter the script and perform a dry-run
 DEBUG=""
  
 # The host directory to store brick files
 BRICK_HOSTDIR="/etc/kubernetes/brick"
- 
-# Read in the desired number of storage nodes from first arg
-NODE_COUNT="$1"
  
 # Ensure that we have enough storage nodes to run GLFS
 if [ "$NODE_COUNT" -lt 2 ]; then
@@ -30,7 +30,6 @@ if [ "$NODE_COUNT" -lt 2 ]; then
 fi
  
 # Label storage nodes appropriately
-STORAGE_NODES=$(kubectl get nodes --no-headers | awk '{print $1}')
 for node in $STORAGE_NODES; do
   $DEBUG kubectl label nodes $node storagenode=glusterfs --overwrite
 done
@@ -85,7 +84,7 @@ metadata:
 provisioner: gluster.org/glusterfs-simple
 parameters:
   forceCreate: \"true\"
-  volumeType: \"replica 2\"
+  volumeType: \"replica $1\"
   brickrootPaths: \"$BRICK_PATHS\"
 " > ./glusterfs/storageclass.yaml
  
