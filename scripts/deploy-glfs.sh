@@ -30,9 +30,9 @@ if [ "$NODE_COUNT" -lt 2 ]; then
 fi
  
 # Label storage nodes appropriately
-STORAGE_NODES=$(kubectl get nodes --no-headers | grep -v master | awk '{print $1}')
+STORAGE_NODES=$(kubectl get nodes --no-headers | awk '{print $1}')
 for node in $STORAGE_NODES; do
-  $DEBUG kubectl label nodes $node storagenode=glusterfs
+  $DEBUG kubectl label nodes $node storagenode=glusterfs --overwrite
 done
  
 # Create the GLFS cluster

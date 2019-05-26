@@ -44,10 +44,10 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
 fi
 
 if [[ "${NODE_ROLE}" == "slave" ]]; then
-    /vagrant/scripts/create-bricks.sh
     echo "$(cat /vagrant/cache/join.sh) --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
 fi
 
+/vagrant/scripts/create-bricks.sh
 # Changing kubelet nodeIP to properly show on kubectl get nodes
 echo "KUBELET_EXTRA_ARGS=--node-ip ${NODE_IP}" >> /var/lib/kubelet/kubeadm-flags.env
 sudo systemctl daemon-reload
