@@ -1,4 +1,5 @@
 #! /bin/bash
 
 yes y | sudo kubeadm reset
-sudo /vagrant/cache/join-master.sh
+
+echo "$(cat /vagrant/cache/join-master.sh) --experimental-control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s

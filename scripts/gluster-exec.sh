@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Usage: ./gluster-exec.sh <command>
+#
+#   Executes a command in all gluster nodes
+#
+
+set +x
+
+function usage() {
+    echo "Usage: $0 command"
+    exit 1
+}
+
+if [[ -z "$1" ]]; then
+    usage
+fi
+
+COMMAND=$@
+ 
+# Retrieve GlusterFS pod IPs
+PEER_IPS=$(kubectl get pods -o wide | grep glusterfs | grep -v provisioner | awk '{print $6}')
+ 
+# Use pod names / IPs to exec in and perform `gluster peer probe`
+for pod_ip in ${PEER_IPS}; do
+    # Exec command in all glusters
+    pod_name=$(kubectl get pods -o wide | grep $pod_ip | awk '{print $1}')
+    kubectl exec -it $pod_name $COMMAND
+done;
+ 

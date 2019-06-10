@@ -55,6 +55,7 @@ test/vagrant-spec/boxes/*.box
 # Vagrant provisioning temp stuff
 /cache
 /disks
+/scripts/glusterfs/storageclass.yaml
 
 # JM stuff
 /vim

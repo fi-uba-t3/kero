@@ -46,7 +46,7 @@ spec:
           mountPath: "/etc/ssl"
           readOnly: true
         - name: glusterfs-brick
-          mountPath: "/etc/kubernetes/brick"
+          mountPath: "/etc/kubernetes/bricks"
         securityContext:
           capabilities: {}
           privileged: true
@@ -103,4 +103,4 @@ spec:
           path: "/etc/ssl"
       - name: glusterfs-brick
         hostPath:
-          path: "/etc/kubernetes/brick"
+          path: "/etc/kubernetes/bricks"

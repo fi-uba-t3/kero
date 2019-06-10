@@ -6,13 +6,20 @@
 set +x
 
 function usage() {
-    echo "Usage: $0 replicas"
+    echo "Usage: $0 <num_replicas> <bricks_per_node>"
     exit 1
 }
 
 if [[ -z "$1" ]]; then
     usage
 fi
+
+if [[ -z "$2" ]]; then
+    usage
+fi
+
+REPLICAS=$1
+BRICKS_PER_NODE=$2
 
 STORAGE_NODES=$(kubectl get nodes --no-headers | awk '{print $1}')
 NODE_COUNT=$(echo $STORAGE_NODES | wc -w)
@@ -21,8 +28,8 @@ NODE_COUNT=$(echo $STORAGE_NODES | wc -w)
 DEBUG=""
  
 # The host directory to store brick files
-BRICK_HOSTDIR="/etc/kubernetes/brick"
- 
+BRICK_HOSTDIR="/etc/kubernetes/bricks"
+
 # Ensure that we have enough storage nodes to run GLFS
 if [ "$NODE_COUNT" -lt 2 ]; then
   echo "ERROR: Cannot deploy GlusterFS with less than 2 nodes"
@@ -47,7 +54,7 @@ done
 echo "GlusterFS is now Running: $count / $NODE_COUNT"
  
 # Retrieve GlusterFS pod IPs
-PEER_IPS=$(kubectl get pods -o wide | grep glusterfs | grep -v provisioner | awk '{print $6}')
+PEER_IPS=$(kubectl get pods -o wide | grep glusterfs | grep -v provisioner | awk '{print $6}' | sort)
  
 # Use pod names / IPs to exec in and perform `gluster peer probe`
 for pod_ip in ${PEER_IPS}; do
@@ -56,7 +63,7 @@ for pod_ip in ${PEER_IPS}; do
     if [ "$pod_ip" == "$peer_ip" ]; then
       continue;
     fi
- 
+
     # Perform a gluster peer probe
     pod_name=$(kubectl get pods -o wide | grep $pod_ip | awk '{print $1}')
     $DEBUG kubectl exec -it $pod_name gluster peer probe $peer_ip
@@ -65,14 +72,18 @@ done;
  
 # Dynamically build StorageClass from pod IPs (see below)
 BRICK_PATHS=""
-for pod_ip in ${PEER_IPS[@]}; do
-  # Insert comma if we already started accumlating ips/paths
-  if [ "$BRICK_PATHS" != "" ]; then
-    BRICK_PATHS="$BRICK_PATHS,"
-  fi
- 
-  # Build up brickrootPaths one host at a time
-  BRICK_PATHS="${BRICK_PATHS}${pod_ip}:${BRICK_HOSTDIR}"
+
+for i in $(seq 0 $(($BRICKS_PER_NODE - 1))); do
+    for pod_ip in ${PEER_IPS[@]}; do
+      # Insert comma if we already started accumlating ips/paths
+      if [ "$BRICK_PATHS" != "" ]; then
+        BRICK_PATHS="$BRICK_PATHS,"
+      fi
+
+      # Build up brickrootPaths one host at a time
+      NEW_BRICK="${BRICK_HOSTDIR}/brick${i}"
+      BRICK_PATHS="${BRICK_PATHS}${pod_ip}:${NEW_BRICK}"
+    done
 done
  
 # Modify StorageClass to contain our GlusterFS brickrootPaths
@@ -84,7 +95,7 @@ metadata:
 provisioner: gluster.org/glusterfs-simple
 parameters:
   forceCreate: \"true\"
-  volumeType: \"replica $1\"
+  volumeType: \"replica $REPLICAS\"
   brickrootPaths: \"$BRICK_PATHS\"
 " > ./glusterfs/storageclass.yaml
  
