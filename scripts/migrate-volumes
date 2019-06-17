@@ -30,8 +30,8 @@ apiVersion: storage.k8s.io/v1
 metadata:
   name: glusterfs-simple
 provisioner: gluster.org/glusterfs-simple
+reclaimPolicy: Retain
 parameters:
-  reclaimPolicy: Retain
   forceCreate: "true"
   volumeType: "replica $REPLICAS"
   brickrootPaths: "$BRICK_PATHS"
@@ -90,7 +90,7 @@ spec:
     namespace: default
     name: ${PVC}-tmp
   glusterfs:
-    endpoints: glusterfs-simple-${PVC}-tmp
+    endpoints: glusterfs-simple-${PVC}
     path: ${PV}
 EOF
 
@@ -109,5 +109,33 @@ spec:
     requests:
       storage: ${VOLUME_SIZE}
 EOF
-    
+
+cat <<EOF | kubectl apply -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copier-${PVC}
+spec:
+  template:
+    spec:
+      containers:
+      - name: copier-${PVC}
+        image: alpine
+        command: ["cp", "-r", "/mnt/pvc-tmp", "/mnt/pvc"]
+        volumeMounts:
+          - name: pvc-tmp
+            mountPath: /mnt/pvc-tmp
+          - name: pvc
+            mountPath: /mnt/pvc
+      restartPolicy: OnFailure
+      volumes:
+        - name: pvc-tmp
+          persistentVolumeClaim:
+            claimName: ${PVC}-tmp
+        - name: pvc
+          persistentVolumeClaim:
+            claimName: ${PVC}
+  backoffLimit: 4
+EOF
+
 done
