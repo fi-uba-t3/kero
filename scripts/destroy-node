@@ -21,6 +21,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
+kubectl drain $NODE --ignore-daemonsets --grace-period=0 --delete-local-data --force
 kubectl delete node $NODE
 kubectl get pods -n kube-system -o wide | grep $NODE | cut -f1 -d' '| xargs kubectl delete pod -n kube-system --force --grace-period=0
 

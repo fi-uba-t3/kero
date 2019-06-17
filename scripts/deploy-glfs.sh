@@ -94,6 +94,7 @@ metadata:
   name: glusterfs-simple
 provisioner: gluster.org/glusterfs-simple
 parameters:
+  reclaimPolicy: Retain
   forceCreate: \"true\"
   volumeType: \"replica $REPLICAS\"
   brickrootPaths: \"$BRICK_PATHS\"
