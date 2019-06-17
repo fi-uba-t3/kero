@@ -93,8 +93,8 @@ apiVersion: storage.k8s.io/v1
 metadata:
   name: glusterfs-simple
 provisioner: gluster.org/glusterfs-simple
+reclaimPolicy: Retain
 parameters:
-  reclaimPolicy: Retain
   forceCreate: \"true\"
   volumeType: \"replica $REPLICAS\"
   brickrootPaths: \"$BRICK_PATHS\"

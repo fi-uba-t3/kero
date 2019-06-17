@@ -41,6 +41,8 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
     sudo --user=vagrant mkdir -p /home/vagrant/.kube
     cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
     chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
+
+    /vagrant/scripts/untaint-nodes.sh
 fi
 
 if [[ "${NODE_ROLE}" == "slave" ]]; then
