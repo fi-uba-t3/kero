@@ -138,4 +138,14 @@ spec:
   backoffLimit: 4
 EOF
 
+COMPLETED=$(kubectl get jobs copier-${PVC} --no-headers | awk '{print $2}')
+while [[ $COMPLETED -ne "1/1" ]]; do
+    sleep 4
+    COMPLETED=$(kubectl get jobs copier-${PVC} --no-headers | awk '{print $2}')
+    echo $COMPLETED
+done
+
+kubectl delete job copier-${PVC}
+kubectl delete pvc ${PVC}-tmp
+
 done
