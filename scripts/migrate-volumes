@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -x
+
 BRICKS_PER_NODE=3
 REPLICAS=3
 BRICK_HOSTDIR=/etc/kubernetes/bricks

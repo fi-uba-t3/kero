@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copier-${PVC}
+spec:
+  template:
+    spec:
+      containers:
+      - name: copier-${PVC}
+        image: busybox
+        command: ["cp", "-r", "/mnt/pvc-tmp/.", "/mnt/pvc"]
+        volumeMounts:
+          - name: pvc-tmp
+            mountPath: /mnt/pvc-tmp
+          - name: pvc
+            mountPath: /mnt/pvc
+      restartPolicy: OnFailure
+      volumes:
+        - name: pvc-tmp
+          persistentVolumeClaim:
+            claimName: ${PVC}-tmp
+        - name: pvc
+          persistentVolumeClaim:
+            claimName: ${PVC}
+  backoffLimit: 4

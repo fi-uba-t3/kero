@@ -101,6 +101,7 @@ parameters:
 " > ./glusterfs/storageclass.yaml
  
 # Create the storage class
+$DEBUG kubectl delete -f ./glusterfs/storageclass.yaml
 $DEBUG kubectl apply -f ./glusterfs/storageclass.yaml
  
 # Bind the necessary ServiceAccount / ClusterRole
