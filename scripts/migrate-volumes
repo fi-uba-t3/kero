@@ -40,7 +40,7 @@ EOF
 kubectl delete -f ./glusterfs/storageclass.yaml
 kubectl apply -f ./glusterfs/storageclass.yaml
 
-PVC_MIGRATION_LIST=$(kubectl get pvc --no-headers | awk '{print $1}' | head -1 )
+PVC_MIGRATION_LIST=$(kubectl get pvc --no-headers | awk '{print $1}' )
 
 for PVC in $PVC_MIGRATION_LIST; do
     echo $PVC
@@ -121,7 +121,7 @@ spec:
       containers:
       - name: copier-${PVC}
         image: alpine
-        command: ["cp", "-r", "/mnt/pvc-tmp", "/mnt/pvc"]
+        command: ["cp", "-r", "/mnt/pvc-tmp/*", "/mnt/pvc"]
         volumeMounts:
           - name: pvc-tmp
             mountPath: /mnt/pvc-tmp
