@@ -123,7 +123,7 @@ spec:
       containers:
       - name: copier-${PVC}
         image: alpine
-        command: ["cp", "-r", "/mnt/pvc-tmp/*", "/mnt/pvc"]
+        command: ["cp", "-r", "/mnt/pvc-tmp/.", "/mnt/pvc"]
         volumeMounts:
           - name: pvc-tmp
             mountPath: /mnt/pvc-tmp
