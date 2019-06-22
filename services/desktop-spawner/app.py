@@ -20,7 +20,7 @@ def new_desk():
     print("Creating a new desk for user '%s' with pass '%s'" % (user, password))
     os.system(create_desk_cmd % (password, user))
 
-    output = subprocess.check_output(desk_url_cmd, shell=True)
+    output = subprocess.check_output(desk_url_cmd % user, shell=True)
     return "Your desk is up on %s, please delete it when you are done." % output
 
 @app.route("/desks", methods=['DELETE'])
