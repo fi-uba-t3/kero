@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: desk-spawner
+  labels:
+    application: desk-spawner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: desk-spawner
+  template:
+    metadata:
+      labels:
+        application: desk-spawner
+    spec:
+      containers:
+      - name: desk-spawner
+        image: juanfresia/desk-spawner:0.0.1
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - mountPath: /vagrant/vnc
+          name: vnc
+        - mountPath: /etc/kubernetes
+          name: config
+      volumes:
+      - name: vnc
+        hostPath:
+          path: /vagrant/vnc
+          type: Directory
+      - name: config
+        hostPath:
+          path: /etc/kubernetes
+          type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: desk-spawner
+  name: desk-spawner-svc
+spec:
+  externalName: desk-spawner-svc
+  ports:
+  - name: admin-panel-tcp
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+    nodePort: 80
+  selector:
+    application: desk-spawner
+  type: NodePort
