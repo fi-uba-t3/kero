@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: desk-spawner
-        image: juanfresia/desk-spawner:0.0.1
+        image: juanfresia/desk-spawner:0.0.2
         ports:
         - containerPort: 5000
         volumeMounts:
