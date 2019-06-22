@@ -1,12 +1,10 @@
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: ldap
+  labels:
+    io.kompose.service: ldap-admin
 spec:
-  serviceName: "ldap-svc"
-  selector:
-    matchLabels:
-      application: ldap
   replicas: 3
   template:
     metadata:
@@ -34,10 +32,6 @@ spec:
           value: fiuba.com
         - name: LDAP_ORGANISATION
           value: FIUBA
-        - name: LDAP_REPLICATION
-          value: "true"
-        - name: LDAP_REPLICATION_HOSTS
-          value: "ldap://ldap-0.ldap-svc.default.svc.cluster.local,ldap://ldap-1.ldap-svc.default.svc.cluster.local,ldap://ldap-2.ldap-svc.default.svc.cluster.local"
         image: osixia/openldap
         ports:
         - containerPort: 389
@@ -47,26 +41,14 @@ spec:
             mountPath: "/etc/ldap/slapd.d"
           - name: gluster-ldap
             mountPath: "/var/lib/ldap"
+      volumes:
+      - name: gluster-ldap
+        persistentVolumeClaim:
+          claimName: ldap-claim
+      - name: gluster-sldap
+        persistentVolumeClaim:
+          claimName: sldap-claim
       restartPolicy: Always
-  volumeClaimTemplates:
-  - metadata:
-      name: gluster-ldap
-      annotations:
-        volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: gluster-sldap
-      annotations:
-        volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 100Mi
 ---
 apiVersion: v1
 kind: Service
@@ -95,3 +77,29 @@ spec:
   selector:
     application: ldap
   type: NodePort
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ldap-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sldap-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
