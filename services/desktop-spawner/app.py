@@ -21,7 +21,8 @@ def new_desk():
     os.system(create_desk_cmd % (password, user))
 
     output = subprocess.check_output(desk_url_cmd % user, shell=True)
-    return "Your desk is up on %s, please delete it when you are done." % output
+    url = output.decode("utf-8").rstrip()
+    return "Your desk is up on %s, please delete it when you are done." % url
 
 @app.route("/desks", methods=['DELETE'])
 def delete_desk():
