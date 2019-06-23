@@ -16,18 +16,21 @@ spec:
     spec:
       containers:
       - name: desk-spawner
-        image: juanfresia/desk-spawner:0.0.2
+        image: juanfresia/desk-spawner:0.0.4
         ports:
         - containerPort: 5000
         volumeMounts:
-        - mountPath: /vagrant/vnc
+        - mountPath: /vagrant
           name: vnc
         - mountPath: /etc/kubernetes
           name: config
+        env:
+        - name: KUBECONFIG
+          value: /etc/kubernetes/admin.conf
       volumes:
       - name: vnc
         hostPath:
-          path: /vagrant/vnc
+          path: /vagrant
           type: Directory
       - name: config
         hostPath:
@@ -47,7 +50,7 @@ spec:
     protocol: TCP
     port: 5000
     targetPort: 5000
-    nodePort: 80
+    nodePort: 32123
   selector:
     application: desk-spawner
   type: NodePort

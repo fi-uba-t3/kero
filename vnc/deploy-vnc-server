@@ -36,9 +36,9 @@ export VNC_HTTP_PORT=$((31001 + VNC_USERID))
 export VNC_PORT=$((30001 + VNC_USERID))
 
 ## TODO: absolute path for template (maybe embedded here?)
-envsubst < template.yaml | kubectl apply -f -
-envsubst < pvc-template.yaml | kubectl apply -f -
-kubectl apply -f pvc-shared.yaml
+envsubst < /vagrant/vnc/template.yaml | kubectl apply -f -
+envsubst < /vagrant/vnc/pvc-template.yaml | kubectl apply -f -
+kubectl apply -f /vagrant/vnc/pvc-shared.yaml
 
 VNC_STATUS=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | awk '{print $3}')
 while [ $VNC_STATUS != "Running" ]; do

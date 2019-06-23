@@ -28,6 +28,6 @@ if [[ -z "$VNC_USERID" ]]; then
     exit 1
 fi
 
-envsubst < template.yaml | kubectl delete -f -
+envsubst < /vagrant/vnc/template.yaml | kubectl delete -f -
 
 echo "Deleted"
