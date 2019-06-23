@@ -5,7 +5,7 @@ metadata:
   labels:
     io.kompose.service: ldap-admin
 spec:
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -63,17 +63,14 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
-    nodePort: 30666
   - name: host-ldap-ssl
     protocol: TCP
     port: 636
     targetPort: 636
-    nodePort: 30636
   - name: host-ldap-tcp
     protocol: TCP
     port: 389
     targetPort: 389
-    nodePort: 30389
   selector:
     application: ldap
   type: NodePort

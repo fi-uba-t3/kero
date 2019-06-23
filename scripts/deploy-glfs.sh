@@ -35,6 +35,8 @@ if [ "$NODE_COUNT" -lt 2 ]; then
   echo "ERROR: Cannot deploy GlusterFS with less than 2 nodes"
   exit 1
 fi
+
+./untaint-nodes.sh
  
 # Label storage nodes appropriately
 for node in $STORAGE_NODES; do

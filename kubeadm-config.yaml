@@ -1,6 +1,5 @@
 apiVersion: kubeadm.k8s.io/v1beta1
 kind: InitConfiguration
-kubernetesVersion: v1.14.1
 localAPIEndpoint:
   advertiseAddress: $NODE_IP
   bindPort: 6443
@@ -15,7 +14,6 @@ bootstrapTokens:
 ---
 apiVersion: kubeadm.k8s.io/v1beta1
 kind: ClusterConfiguration
-kubernetesVersion: v1.14.1
 controlPlaneEndpoint: "${NODE_IP}:6443"
 networking:
   podSubnet: "10.1.0.0/16"
