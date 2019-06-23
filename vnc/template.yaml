@@ -61,14 +61,13 @@ spec:
   ports:
   - name: http-port-tcp
     protocol: TCP
-    port: 6901
+    port: 80
     targetPort: 6901
-    nodePort: ${VNC_HTTP_PORT}
+    #nodePort: ${VNC_HTTP_PORT}
   - name: vnc-port-tcp
     protocol: TCP
-    port: 5901
+    port: 5001
     targetPort: 5901
-    nodePort: ${VNC_PORT}
+    #nodePort: ${VNC_PORT}
   selector:
     application: headless-vnc-${VNC_USERNAME}
-  type: NodePort

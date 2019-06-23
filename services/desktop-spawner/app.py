@@ -3,7 +3,7 @@ import os, subprocess
 app = Flask(__name__)
 
 create_desk_cmd = "echo %s | bash /vagrant/vnc/deploy-vnc-server %s"
-desk_url_cmd = "kubectl get svc --no-headers | grep %s | awk '{print $3}'"
+desk_url_cmd = "kubectl get svc --no-headers | grep %s | grep headless |  awk '{print $3}'"
 delete_desk_cmd = "echo %s | bash /vagrant/vnc/delete-vnc-server %s"
 
 @app.route("/")
@@ -31,7 +31,7 @@ def delete_desk():
     user = body['user']
     password = body['password']
 
-    print("Deleting desk for user '%s' with pass '%s'" % (user, paqssword))
+    print("Deleting desk for user '%s' with pass '%s'" % (user, password))
     os.system(delete_desk_cmd % (password, user))
 
     return "Done"
