@@ -1,12 +1,25 @@
 #! /bin/bash
-kubectl apply -f /vagrant/manifests/ldap-server.yaml
+
+set +x
+
+export LDAP_IP="10.96.100.100"
+
+if [[ -z "$1" ]]; then
+    echo "INFO: No LDAP IP provided, defaulting to ${LDAP_IP}"
+else
+    export LDAP_IP="$1"    
+fi
+
+envsubst < /vagrant/manifests/ldap-server-deployment.yaml | kubectl apply -f -
+
 LDAP_STATUS=$(kubectl get pods | grep ldap | awk '{print $3}') 
 while [ $LDAP_STATUS != "Running" ]; do
     echo "Waiting for LDAP deployment (status: ${LDAP_STATUS})"
-    sleep 5
+    sleep 6
     LDAP_STATUS=$(kubectl get pods | grep ldap | awk '{print $3}')
 done
+
 LDAP_PODNAME=$(kubectl get pods | grep ldap | awk '{print $1}')
 kubectl cp /vagrant/manifests/posixAccount.xml default/$LDAP_PODNAME:var/www/phpldapadmin/templates/creation/posixAccount.xml
-LDAP_IP=$(kubectl describe pod $LDAP_PODNAME | grep "Node:" | cut -d "/" -f 2)
-echo "Connect to LDAP admin panel on ${LDAP_IP}:30666"
+
+echo "Connect to LDAP admin panel on ${LDAP_IP}"
