@@ -1,0 +1,37 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: node-stopper
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            node-role.kubernetes.io/master: ""
+          containers:
+          - name: node-stopper
+            image: juanfresia/node-stopper:0.0.1
+            env:
+            - name: KUBECONFIG
+              value: /etc/kubernetes/admin.conf
+            - name: TIMES_NOT_READY_LIMIT
+              value: "1200" # seconds = 20 minutes
+            - name: SCRIPTS_DIR
+              value: /vagrant/scripts
+            volumeMounts:
+            - mountPath: /vagrant
+              name: scripts
+            - mountPath: /etc/kubernetes
+              name: config
+          restartPolicy: OnFailure
+          volumes:
+          - name: scripts
+            hostPath:
+              path: /vagrant
+              type: Directory
+          - name: config
+            hostPath:
+              path: /etc/kubernetes
+              type: Directory
