@@ -12,7 +12,7 @@ spec:
             node-role.kubernetes.io/master: ""
           containers:
           - name: node-stopper
-            image: juanfresia/node-stopper:0.0.1
+            image: juanfresia/node-stopper:0.0.2
             env:
             - name: KUBECONFIG
               value: /etc/kubernetes/admin.conf

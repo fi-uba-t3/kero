@@ -20,7 +20,7 @@ for NODE in ${ALIVE_NODES}; do
     if [[ ${DIFF} -ge ${TIMES_NOT_READY_LIMIT} ]]; then
         echo "Node ${NODE} has been NotReady for too long"
         echo "Killing node ${NODE}"
-        ${SCRIPTS_DIR}/destroy-node ${NODE}
+        yes y | ${SCRIPTS_DIR}/destroy-node ${NODE}
     fi
 
 done
