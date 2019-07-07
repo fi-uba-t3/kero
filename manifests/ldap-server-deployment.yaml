@@ -1,4 +1,3 @@
-# THIS FILE WAS PURELY EXPERIMENTAL AND IT AINT WORK
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:

@@ -3,7 +3,7 @@ import os, subprocess
 app = Flask(__name__)
 
 create_desk_cmd = "echo %s | bash /vagrant/vnc/deploy-vnc-server %s"
-desk_url_cmd = "kubectl get svc --no-headers | grep %s | grep headless |  awk '{print $3}'"
+desk_url_cmd = "kubectl get svc --no-headers | grep %s | grep headless | awk '{print $3}'"
 delete_desk_cmd = "echo %s | bash /vagrant/vnc/delete-vnc-server %s"
 
 @app.route("/")

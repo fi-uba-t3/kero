@@ -18,7 +18,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
       - name: desk-spawner
-        image: juanfresia/desk-spawner:0.0.4
+        image: juanfresia/desk-spawner:0.0.5
         ports:
         - containerPort: 5000
         volumeMounts:
@@ -50,9 +50,7 @@ spec:
   ports:
   - name: admin-panel-tcp
     protocol: TCP
-    port: 5000
+    port: 80
     targetPort: 5000
-    nodePort: 32123
   selector:
     application: desk-spawner
-  type: NodePort

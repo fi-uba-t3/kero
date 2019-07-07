@@ -1,3 +1,4 @@
+# THIS FILE WAS PURELY EXPERIMENTAL AND IT AINT WORK
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

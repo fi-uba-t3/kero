@@ -1,7 +1,7 @@
 ---
 machine:
   image: "ubuntu/xenial64"
-  memory: "1024"
+  memory: "2048"
   cpus: "2"
 
 nodes:

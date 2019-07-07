@@ -6,7 +6,7 @@ metadata:
   labels:
     application: headless-vnc-${VNC_USERNAME}
 spec:
-  # 1 Pods should exist at all times.
+  # 1 Pod should exist at all times.
   replicas: 1
   template:
     metadata:
@@ -63,11 +63,9 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 6901
-    #nodePort: ${VNC_HTTP_PORT}
   - name: vnc-port-tcp
     protocol: TCP
     port: 5001
     targetPort: 5901
-    #nodePort: ${VNC_PORT}
   selector:
     application: headless-vnc-${VNC_USERNAME}

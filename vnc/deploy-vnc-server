@@ -47,7 +47,6 @@ while [ $VNC_STATUS != "Running" ]; do
     VNC_STATUS=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | awk '{print $3}')
 done
 
-VNC_PODNAME=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | cut -d " " -f 1)
-VNC_IP=$(kubectl describe pod $VNC_PODNAME | grep "Node:" | cut -d "/" -f 2)
-sleep 6
-echo "Connect to ${VNC_IP}:${VNC_HTTP_PORT}"
+VNC_IP=$(kubectl get svc --no-headers | grep "vnc-svc-${VNC_USERNAME}" | awk '{print $3}')
+sleep 8
+echo "Connect to ${VNC_IP}"
