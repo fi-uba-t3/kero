@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set +x
+
+echo "Pulling all docker images. This process could take some minutes..."
+
+# VNC image (remote desktop service)
+sudo docker pull juanfresia/taller3-test-vnc
+
+# GlusterFS images (shared file system service)
+sudo docker pull gluster/gluster-centos:latest
+sudo docker pull quay.io/external_storage/glusterfs-simple-provisioner:latest
+
+# LDAP images (users CRUD service)
+sudo docker pull osixia/phpldapadmin
+sudo docker pull osixia/openldap
+
+# Desktop spawner image (foreign access service)
+sudo docker pull juanfresia/desk-spawner:0.0.5
+
+# Node stopper (for monitoring)
+sudo docker pull juanfresia/node-stopper:0.0.2
+
+echo "Pulling process completed!"
