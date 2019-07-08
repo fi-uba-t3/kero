@@ -16,6 +16,6 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
-envsubst < $KERO_HOME/manifests/ldap-server-deployment.yaml | kubectl delete -f -
+envsubst < $KERO_HOME/services/ldap/ldap-server-deployment.yaml | kubectl delete -f -
 
 echo "LDAP deleted."

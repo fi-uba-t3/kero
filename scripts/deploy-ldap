@@ -10,7 +10,7 @@ else
     export LDAP_IP="$1"    
 fi
 
-envsubst < $KERO_HOME/manifests/ldap-server-deployment.yaml | kubectl apply -f -
+envsubst < $KERO_HOME/services/ldap/ldap-server-deployment.yaml | kubectl apply -f -
 
 LDAP_STATUS=$(kubectl get pods | grep ldap | awk '{print $3}') 
 while [ $LDAP_STATUS != "Running" ]; do
@@ -20,6 +20,6 @@ while [ $LDAP_STATUS != "Running" ]; do
 done
 
 LDAP_PODNAME=$(kubectl get pods | grep ldap | awk '{print $1}')
-kubectl cp $KERO_HOME/manifests/posixAccount.xml default/$LDAP_PODNAME:var/www/phpldapadmin/templates/creation/posixAccount.xml
+kubectl cp $KERO_HOME/services/ldap/posixAccount.xml default/$LDAP_PODNAME:var/www/phpldapadmin/templates/creation/posixAccount.xml
 
 echo "Connect to LDAP admin panel on ${LDAP_IP}"

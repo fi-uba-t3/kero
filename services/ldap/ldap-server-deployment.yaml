@@ -1,0 +1,102 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ldap
+  labels:
+    io.kompose.service: ldap-admin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: ldap
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: ldap-admin 
+        env:
+        - name: PHPLDAPADMIN_HTTPS
+          value: "false"
+        - name: PHPLDAPADMIN_LDAP_HOSTS
+          value: 127.0.0.1
+        image: osixia/phpldapadmin
+        ports:
+        - containerPort: 80
+      - name: ldap-host
+        env:
+        - name: LDAP_READONLY_USER
+          value: "true"
+        - name: LDAP_ADMIN_PASSWORD
+          value: ${LDAP_ADMIN_PASS}
+        - name: LDAP_DOMAIN
+          value: ${DOMAIN_NAME}
+        - name: LDAP_ORGANISATION
+          value: FIUBA
+        image: osixia/openldap
+        ports:
+        - containerPort: 389
+        - containerPort: 636
+        volumeMounts:
+          - name: gluster-sldap
+            mountPath: "/etc/ldap/slapd.d"
+          - name: gluster-ldap
+            mountPath: "/var/lib/ldap"
+      volumes:
+      - name: gluster-ldap
+        persistentVolumeClaim:
+          claimName: ldap-claim
+      - name: gluster-sldap
+        persistentVolumeClaim:
+          claimName: sldap-claim
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: ldap
+  name: ldap-svc
+spec:
+  externalName: ldap-svc
+  ports:
+  - name: admin-panel-tcp
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  - name: host-ldap-ssl
+    protocol: TCP
+    port: 636
+    targetPort: 636
+  - name: host-ldap-tcp
+    protocol: TCP
+    port: 389
+    targetPort: 389
+  selector:
+    application: ldap
+  clusterIP: ${LDAP_IP}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ldap-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sldap-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi

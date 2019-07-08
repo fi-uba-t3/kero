@@ -21,7 +21,7 @@ for node in node-{1,2,3,4,5,6}; do
     vagrant ssh $node -c " \
         sudo umount /etc/kubernetes/{brick,bricks}; \
         sudo rmdir /etc/kubernetes/{brick,bricks}; \
-        sudo $KERO_HOME/scripts/create-bricks.sh; \
+        sudo $KERO_HOME/scripts/create-bricks; \
         sudo mkdir -p /etc/kubernetes/bricks/brick0 /etc/kubernetes/bricks/brick1  /etc/kubernetes/bricks/brick2; \
         rm -rf /var/lib/misc/glusterfsd; \
         rm -rf /etc/glusterfs; \

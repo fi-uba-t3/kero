@@ -1,7 +1,4 @@
 #!/bin/bash
-#
-# Usage: ./deploy-glfs.sh <number_of_storage_nodes>
-#
 
 set +x
 
@@ -36,7 +33,7 @@ if [ "$NODE_COUNT" -lt 2 ]; then
   exit 1
 fi
 
-./untaint-nodes.sh
+sudo untaint-nodes
  
 # Label storage nodes appropriately
 for node in $STORAGE_NODES; do
@@ -44,7 +41,7 @@ for node in $STORAGE_NODES; do
 done
  
 # Create the GLFS cluster
-$DEBUG kubectl apply -f ./glusterfs/glusterfs-daemonset.yaml
+$DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/glusterfs-daemonset.yaml
  
 # Wait for the GLFS cluster to come up
 count="$(kubectl get pods --no-headers | grep glusterfs | grep -v provisioner | awk '{print $3}' | grep Running | wc -l)"
@@ -100,14 +97,14 @@ parameters:
   forceCreate: \"true\"
   volumeType: \"replica $REPLICAS\"
   brickrootPaths: \"$BRICK_PATHS\"
-" > ./glusterfs/storageclass.yaml
+" > $KERO_HOME/services/glusterfs/storageclass.yaml
  
 # Create the storage class
-$DEBUG kubectl delete -f ./glusterfs/storageclass.yaml
-$DEBUG kubectl apply -f ./glusterfs/storageclass.yaml
+$DEBUG kubectl delete -f $KERO_HOME/services/glusterfs/storageclass.yaml
+$DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/storageclass.yaml
  
 # Bind the necessary ServiceAccount / ClusterRole
-$DEBUG kubectl apply -f ./glusterfs/rbac.yaml
+$DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/rbac.yaml
  
 # Create the GLFS Simple Provisioner
-$DEBUG kubectl apply -f ./glusterfs/deployment.yaml
+$DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/deployment.yaml

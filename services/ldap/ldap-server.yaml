@@ -1,0 +1,98 @@
+# THIS FILE WAS PURELY EXPERIMENTAL AND IT AINT WORK
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ldap
+spec:
+  serviceName: "ldap-svc"
+  selector:
+    matchLabels:
+      application: ldap
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        application: ldap
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: ldap-admin 
+        env:
+        - name: PHPLDAPADMIN_HTTPS
+          value: "false"
+        - name: PHPLDAPADMIN_LDAP_HOSTS
+          value: 127.0.0.1
+        image: osixia/phpldapadmin
+        ports:
+        - containerPort: 80
+      - name: ldap-host
+        env:
+        - name: LDAP_READONLY_USER
+          value: "true"
+        - name: LDAP_ADMIN_PASSWORD
+          value: admin
+        - name: LDAP_DOMAIN
+          value: fiuba.com
+        - name: LDAP_ORGANISATION
+          value: FIUBA
+        - name: LDAP_REPLICATION
+          value: "true"
+        - name: LDAP_REPLICATION_HOSTS
+          value: "ldap://ldap-0.ldap-svc.default.svc.cluster.local,ldap://ldap-1.ldap-svc.default.svc.cluster.local,ldap://ldap-2.ldap-svc.default.svc.cluster.local"
+        image: osixia/openldap
+        ports:
+        - containerPort: 389
+        - containerPort: 636
+        volumeMounts:
+          - name: gluster-sldap
+            mountPath: "/etc/ldap/slapd.d"
+          - name: gluster-ldap
+            mountPath: "/var/lib/ldap"
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: gluster-ldap
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Mi
+  - metadata:
+      name: gluster-sldap
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: ldap
+  name: ldap-svc
+spec:
+  externalName: ldap-svc
+  ports:
+  - name: admin-panel-tcp
+    protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30666
+  - name: host-ldap-ssl
+    protocol: TCP
+    port: 636
+    targetPort: 636
+    nodePort: 30636
+  - name: host-ldap-tcp
+    protocol: TCP
+    port: 389
+    targetPort: 389
+    nodePort: 30389
+  selector:
+    application: ldap
+  type: NodePort

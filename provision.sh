@@ -3,7 +3,11 @@
 set -exuo
 
 export KERO_HOME="/vagrant" # Home for all our project
+export DOMAIN_NAME="fiuba.com" # Domain name for LDAP
+export LDAP_ADMIN_PASS="admin" # LDAP administrator password
 echo 'KERO_HOME="/vagrant"' | sudo tee -a /etc/environment
+echo 'KERO_HOME="kaibacorp.com"' | sudo tee -a /etc/environment
+echo 'KERO_HOME="admin"' | sudo tee -a /etc/environment
 
 $KERO_HOME/scripts/install-docker
 $KERO_HOME/scripts/install-kubeadm

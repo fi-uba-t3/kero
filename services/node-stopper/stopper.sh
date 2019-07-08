@@ -1,7 +1,7 @@
 #! /bin/bash
 
 TIMES_NOT_READY_LIMIT=${TIMES_NOT_READY_LIMIT:-600}
-SCRIPTS_DIR=${SCRIPTS_DIR:-/vagrant/scripts}
+SCRIPTS_DIR="${KERO_HOME}/scripts"
 
 ALIVE_NODES=$(kubectl get nodes --no-headers | awk '{print $1}')
 
