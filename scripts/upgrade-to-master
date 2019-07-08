@@ -2,4 +2,4 @@
 
 yes y | sudo kubeadm reset
 
-echo "$(cat /vagrant/cache/join-master.sh) --experimental-control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
+echo "$(cat ${KERO_HOME}/cache/join-master.sh) --experimental-control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s

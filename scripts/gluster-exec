@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Usage: ./gluster-exec.sh <command>
+# Usage: ./gluster-exec <command>
 #
 #   Executes a command in all gluster nodes
 #

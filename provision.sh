@@ -2,21 +2,21 @@
 
 set -exuo
 
-# sudo service kubelet stop || true
-# sudo rm -rf /etc/kubernetes/manifests/ /etc/kubernetes/kubelet.conf /etc/kubernetes/bootstrap-kubelet.conf /var/lib/etcd/
+export KERO_HOME="/vagrant" # Home for all our project
+echo 'KERO_HOME="/vagrant"' | sudo tee -a /etc/environment
 
-/vagrant/scripts/docker.sh
-/vagrant/scripts/kubeadm.sh
-/vagrant/scripts/etcdctl.sh
+$KERO_HOME/scripts/install-docker
+$KERO_HOME/scripts/install-kubeadm
+$KERO_HOME/scripts/install-etcdctl
 
 if [[ "${NODE_ROLE}" == "master" ]]; then
 
     # If it is not the first master, we join the already existing cluster
-    if [ -f /vagrant/cache/join-master.sh ]; then
-        echo "$(cat /vagrant/cache/join-master.sh) --experimental-control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
+    if [ -f $KERO_HOME/cache/join-master.sh ]; then
+        echo "$(cat ${KERO_HOME}/cache/join-master.sh) --experimental-control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
     else
         # Otherwise, we create a new cluster.
-        mkdir -p /vagrant/cache
+        mkdir -p $KERO_HOME/cache
 
         # Generate and store a token for bootstrapping
         KUBEADM_TOKEN=$(kubeadm token generate)
@@ -24,16 +24,16 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
         # The IP of the first node will be the service IP for the apiserver
         # service. TODO: replace this with a LB
         # It is replaced in the template from NODE_IP env var.
-        envsubst < /vagrant/kubeadm-config.yaml > /tmp/kubeadm-config.yaml
+        envsubst < $KERO_HOME/kubeadm-config.yaml > /tmp/kubeadm-config.yaml
         sudo kubeadm init --config=/tmp/kubeadm-config.yaml \
-            --experimental-upload-certs | tee /vagrant/cache/kubeadm-init.log
+            --experimental-upload-certs | tee $KERO_HOME/cache/kubeadm-init.log
 
         # Install network plugin
-        sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f /vagrant/manifests/kubeadm-kuberouter.yaml
+        sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f $KERO_HOME/manifests/kubeadm-kuberouter.yaml
 
         # Leave instructions to other masters and nodes on how to join the cluster.
-        cat /vagrant/cache/kubeadm-init.log | grep "experimental-control" -B2 > /vagrant/cache/join-master.sh
-        tail -2 /vagrant/cache/kubeadm-init.log > /vagrant/cache/join.sh
+        cat $KERO_HOME/cache/kubeadm-init.log | grep "experimental-control" -B2 > $KERO_HOME/cache/join-master.sh
+        tail -2 $KERO_HOME/cache/kubeadm-init.log > $KERO_HOME/cache/join.sh
 
     fi
 
@@ -42,11 +42,11 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
     cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
     chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
 
-    /vagrant/scripts/untaint-nodes.sh
+    $KERO_HOME/scripts/untaint-nodes
 fi
 
 if [[ "${NODE_ROLE}" == "slave" ]]; then
-    echo "$(cat /vagrant/cache/join.sh) --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
+    echo "$(cat ${KERO_HOME}/cache/join.sh) --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
 fi
 
 # Changing kubelet nodeIP to properly show on kubectl get nodes
@@ -54,4 +54,6 @@ echo "KUBELET_EXTRA_ARGS=--node-ip ${NODE_IP}" >> /var/lib/kubelet/kubeadm-flags
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
-/vagrant/scripts/create-bricks.sh
+$KERO_HOME/scripts/pull-images
+sudo cp $(find $KERO_HOME/scripts -type f) /usr/local/sbin
+sudo create-bricks

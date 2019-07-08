@@ -2,7 +2,7 @@
 
 set +x
 
-kubectl apply -f /vagrant/services/desktop-spawner/service.yaml
+envsubst < $KERO_HOME/services/desktop-spawner/service.yaml | kubectl apply -f -
 
 SPAWNER_STATUS=$(kubectl get pods | grep desk-spawner | awk '{print $3}') 
 while [ $SPAWNER_STATUS != "Running" ]; do

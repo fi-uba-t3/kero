@@ -19,9 +19,9 @@ spec:
             - name: TIMES_NOT_READY_LIMIT
               value: "1200" # seconds = 20 minutes
             - name: SCRIPTS_DIR
-              value: /vagrant/scripts
+              value: ${KERO_HOME}/scripts
             volumeMounts:
-            - mountPath: /vagrant
+            - mountPath: KERO_HOME
               name: scripts
             - mountPath: /etc/kubernetes
               name: config
@@ -29,7 +29,7 @@ spec:
           volumes:
           - name: scripts
             hostPath:
-              path: /vagrant
+              path: KERO_HOME
               type: Directory
           - name: config
             hostPath:

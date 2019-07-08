@@ -22,7 +22,7 @@ spec:
         ports:
         - containerPort: 5000
         volumeMounts:
-        - mountPath: /vagrant
+        - mountPath: ${KERO_HOME}
           name: vnc
         - mountPath: /etc/kubernetes
           name: config
@@ -32,7 +32,7 @@ spec:
       volumes:
       - name: vnc
         hostPath:
-          path: /vagrant
+          path: ${KERO_HOME}
           type: Directory
       - name: config
         hostPath:

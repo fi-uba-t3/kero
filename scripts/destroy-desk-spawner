@@ -1,0 +1,5 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/desktop-spawner/service.yaml | kubectl delete -f -
