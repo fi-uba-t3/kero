@@ -104,3 +104,9 @@ The number of replicas can be decided by the client (Default is 5). So we need t
 One major advantage of such volume type is that even if one brick fails the data can still be accessed from its replicated bricks. Such a volume is used for better reliability and data redundancy.
 
 ## Users
+All users need to be previously added on the system by a system administrator in order to use the many services like their virtual desktops. In order to achieve so, a directory service must also be deployed within the Kubernetes cluster.
+
+### Directory service
+The directory service implemented is based on a standard [OpenLDAP](http://www.openldap.org/) with a [phpLDAPadmin](http://phpldapadmin.sourceforge.net/wiki/index.php/Main_Page) administrator graphic panel. To add or remove a particular user record, the administrator can simply log in via the administrator panel and add/remove that entry.
+
+Since the directory is also persisted via GlusterFS, even if the machine running the directory service fails, one will be relaunched and all data would be retrieved from any replica.
