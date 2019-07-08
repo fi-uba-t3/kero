@@ -1,10 +1,28 @@
 # Architecture
 
-The main requirement of our project is to provide various services using desktop computers with different specifications. To the end user, all computers look the same. On the inside, we combine a well known container orchestrator to deploy services and desktops for our users.
+The main objective of this project is to provide various services to a private network using desktop computers with heterogeneous specifications as hardware. To the end user, all computers look the same. On the inside, we combine a well known container orchestrator to deploy services and desktops for our users.
+
+The set of machines that form part of the platform is called _cluster_. Any
+single machine in the _cluster_ may be referred as a _node_. This set
+of machines can be heterogeneous and will run only basic services needed for
+running and managing the cluster on bare metal. All services provided by the
+cluster run on containers.
+
+Among the services provided by the cluster we list:
+- **Virtual desktops**: different users may login to what looks like a private
+  computer, but is actually containerized.
+- **LDAP registry**: an LDAP registry to provide credential for users and
+  administrators.
+- **Disributed volumes**: a distributed filesystem that provides HA replicated
+  access to storage, which is shared among many nodes with storage capabilities.
+
+This design also provides a way of adding more custom services so long they are
+compliant with the container orchestrator Kubernetes.
 
 ![](/docs/architecture.png)
 
-## Container orchestrator
+## Container orchestrator and virtualization
+
 To deploy our services and the employees desktops, we use an orchestrator named [Kubernetes (K8s)](https://kubernetes.io/). K8s is an open-source system for automating deployment, scaling, and management of containerized applications.
 But above all, K8s is self-healing. It restarts containers that fail, replaces and reschedules containers when nodes die, kills containers that don’t respond to your user-defined health check, and doesn’t advertise them to clients until they are ready to serve.
 
@@ -53,7 +71,7 @@ These controllers include:
 ### Meta orchestrator
 Set up scripts typically start all master components on the same machines, and do not run user containers on this machine. But because we want all machines to look the same, and we don't rely on the same machines to be functional forever, we implement a service to orchestrate master nodes. This meta orchestrator is responsible for implementing the K8s self-healing feature at node level.
 
-The meta orchestrator service is deployed on K8s and monitors master node health and readiness conditions. If a kubelet fails to update these variables, and a given time passes, the service assumes the master is gone. A non-master node is chosen and "crowned". This process consists of the following:
+The meta orchestrator service is deployed on K8s that monitors master node health and readiness conditions. If a kubelet fails to update these variables, and a given time passes, the service assumes the master is gone. A non-master node is chosen and "crowned". This process consists of the following:
 * The old master is deleted from the cluster
 * A non-master node is chosen, based on a combination of system requirements and few, low priority, scheduled pods.
 * The chosen node is drained and rebooted
@@ -62,9 +80,18 @@ The meta orchestrator service is deployed on K8s and monitors master node health
 New or repaired machines can join the cluster by running the installer.
 
 ## Desktops
-To emulate a desktop computer, we make use of the Virtual Network Computing ????
 
-Users can use their home directory or access files on the sharedfs as long as they have permissions that allow them to.
+To emulate a desktop computers, we use of the VNC (Virtual Network Computing) protocol. Essentially a container running
+centOS and xfce window manager is deployed for each user upon login. The
+container is orchestrated by Kubernetes and may land on any node. To make it
+accessible from anywhere in the network, the container also includes a VNC
+server, which is serves an http endpoint. This way anyone with access to the
+network and a browser (which may run natively in the _node_ or on an external
+machine not part of the cluster) can access the remote desktop.
+
+To further simulate an user environment, we provide a personal volume to each
+user, mounted in its home. Any changes made there persist if the desktop
+container is moved or reseted. A shared volume is also available and visible to all users.
 
 ## Storage
 Machines hard disks are partitioned in two. The first, and smaller partition, is reserved for the underlying OS and data needed to run node components. The bigger partition or brick is dedicated to save files from the users homes and shared filesystem service.
