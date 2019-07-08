@@ -6,8 +6,8 @@ export KERO_HOME="/vagrant" # Home for all our project
 export DOMAIN_NAME="fiuba.com" # Domain name for LDAP
 export LDAP_ADMIN_PASS="admin" # LDAP administrator password
 echo 'KERO_HOME="/vagrant"' | sudo tee -a /etc/environment
-echo 'KERO_HOME="kaibacorp.com"' | sudo tee -a /etc/environment
-echo 'KERO_HOME="admin"' | sudo tee -a /etc/environment
+echo 'DOMAIN_NAME="kaibacorp.com"' | sudo tee -a /etc/environment
+echo 'LDAP_ADMIN_PASS="admin"' | sudo tee -a /etc/environment
 
 $KERO_HOME/scripts/install-docker
 $KERO_HOME/scripts/install-kubeadm
@@ -33,7 +33,7 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
             --experimental-upload-certs | tee $KERO_HOME/cache/kubeadm-init.log
 
         # Install network plugin
-        sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f $KERO_HOME/manifests/kubeadm-kuberouter.yaml
+        sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f $KERO_HOME/services/kuberouter/kubeadm-kuberouter.yaml
 
         # Leave instructions to other masters and nodes on how to join the cluster.
         cat $KERO_HOME/cache/kubeadm-init.log | grep "experimental-control" -B2 > $KERO_HOME/cache/join-master.sh

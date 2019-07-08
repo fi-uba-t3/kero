@@ -1,0 +1,15 @@
+#! /bin/bash
+
+set +x
+
+export DASHBOARD_IP="10.96.111.111"
+
+if [[ -z "$1" ]]; then
+    echo "INFO: No dashboard IP provided, defaulting to ${DASHBOARD_IP}"
+else
+    export DASHBOARD_IP="$1"    
+fi
+
+envsubst < $KERO_HOME/services/dashboard/dashboard.yaml | kubectl delete -f -
+
+echo "Monitoring dashboard deleted."

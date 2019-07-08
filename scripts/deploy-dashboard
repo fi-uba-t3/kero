@@ -1,0 +1,22 @@
+#! /bin/bash
+
+set +x
+
+export DASHBOARD_IP="10.96.111.111"
+
+if [[ -z "$1" ]]; then
+    echo "INFO: No dashboard IP provided, defaulting to ${DASHBOARD_IP}"
+else
+    export DASHBOARD_IP="$1"    
+fi
+
+envsubst < $KERO_HOME/services/dashboard/dashboard.yaml | kubectl apply -f -
+
+DASHBOARD_STATUS=$(kubectl get pods --namespace=kube-system | grep dashboard | awk '{print $3}') 
+while [ $DASHBOARD_STATUS != "Running" ]; do
+    echo "Waiting for dashboard deployment (status: ${DASHBOARD_STATUS})"
+    sleep 6
+    DASHBOARD_STATUS=$(kubectl get pods --namespace=kube-system | grep dashboard | awk '{print $3}')
+done
+
+echo "Connect to the monitoring dashboard on https://${DASHBOARD_IP}"

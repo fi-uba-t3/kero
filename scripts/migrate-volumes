@@ -25,7 +25,7 @@ for i in $(seq 0 $(($BRICKS_PER_NODE - 1))); do
     done
 done
 
-cat <<EOF | tee ./glusterfs/storageclass.yaml
+cat <<EOF | tee $KERO_HOME/services/glusterfs/storageclass.yaml
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
@@ -39,8 +39,8 @@ parameters:
   brickrootPaths: "$BRICK_PATHS"
 EOF
 
-kubectl delete -f ./glusterfs/storageclass.yaml
-kubectl apply -f ./glusterfs/storageclass.yaml
+kubectl delete -f $KERO_HOME/services/glusterfs/storageclass.yaml
+kubectl apply -f $KERO_HOME/services/glusterfs/storageclass.yaml
 
 PVC_MIGRATION_LIST=$(kubectl get pvc --no-headers | awk '{print $1}' )
 
