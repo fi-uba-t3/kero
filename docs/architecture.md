@@ -19,7 +19,7 @@ Among the services provided by the cluster we list:
 This design also provides a way of adding more custom services so long they are
 compliant with the container orchestrator Kubernetes.
 
-![](/docs/architecture.png)
+![](./img/architecture.png)
 
 ## Container orchestrator and virtualization
 

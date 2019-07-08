@@ -1,9 +1,10 @@
-## User guide to KERO
+# User guide to KERO
 
-This guide is aimed to KERO end users and provides information on how to access
-and use the different services provided.
+This guide is aimed for KERO final users and provides information on how to access and use the different services provided.
 
-## Login in and accessing a desktop
+## Remote desktop service
+
+### Login in and accessing a desktop
 
 TODO
 
@@ -11,10 +12,10 @@ TODO
 
 TODO
 
-## Accessing the cluster from outside
+### Accessing the cluster from outside
 
 TODO
 
-## Logout
+### Logout
 
 TODO
