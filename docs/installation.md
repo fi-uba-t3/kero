@@ -2,9 +2,11 @@
 
 This guide provides information on how to set up your KERO cluster and configure it to be ready to serve users.
 
-## Hardware requirements
+## Requirements
 
-## Software requirements
+* 4 GB RAM per node
+* 2 cores per node
+* All cluster nodes have to be configured and joined to the same network
 * OS with the following requirements:
     - systemd
 
