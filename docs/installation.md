@@ -42,7 +42,7 @@ After entering your administrator full DN (the one you specified during the KERO
 
 ![](./img/ldap_login_success.png)
 
-By clicking the _import_ icon, you will be able to import new LDAP entries by either specifying some .ldif file on your machine or pasting its contents
+By clicking the _import_ icon, you will be able to import new LDAP entries by either specifying some .ldif file on your machine or pasting its contents.
 
 ![](./img/ldap_import.png)
 
@@ -50,7 +50,7 @@ After importing your data, click on _Proceed_.
 
 ![](./img/ldap_import_with_ldif.png)
 
-If no errors where present on the .ldif file, the new entries should all be created successfully:
+If no errors were present on the .ldif file, the new entries should all be created successfully:
 
 ![](./img/ldap_import_success.png)
 
@@ -80,6 +80,20 @@ If you want to delete some user, after selecting it on the left menu tree click 
 
 A success message should appear and the user should be deleted.
 
-![](./img/ldap_delete_user_success.png)
+![](./img/ldap_delete_success.png)
 
-## Monitoring your cluster 
+## Monitoring your cluster
+
+An additional monitoring service is provided via the Kubernetes Web UI Dashboard. In order to set up this dashboard, simply run the `deploy-dashboard` command. 
+
+The `deploy-dashboard` script can optionally take the desired dahsboard server IP as an argument (it defaults to 10.96.111.111).
+
+After being deployed, you can check the monitoring dashboard on the IP provided by the script. Please note that you may need to add some exception rule in your browser for a self-signed SSL certificate.
+
+If you find some box like the following, simply select _SKIP_:
+
+** --- PLACEHOLDER --- **
+
+Once on the dashboard, you can monitor all pods, services and deployments on the KERO cluster.
+
+** --- PLACEHOLDER --- *
