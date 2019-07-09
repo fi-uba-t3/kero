@@ -16,7 +16,12 @@ To login to your desktop, follow these steps:
 
 ### How to use personal and shared storage
 
-TODO
+* Your **personal storage** is located under _/home/users/`<your-VNC-username>`/_ 
+* The **shared storage** is located under _/mnt/shared/_
+
+Feel free to save your personal data on your **personal storage**, and communal data on **shared storage**.
+
+Every other directory is ephemeral storage. This means that data saved outside personal or shared storage will not be persisted on desktop reboot.
 
 ### Accessing the cluster from outside
 
