@@ -2,13 +2,6 @@
 
 set -ex
 
-export KERO_HOME="/vagrant" # Home for all our project
-export DOMAIN_NAME="fiuba.com" # Domain name for LDAP
-export LDAP_ADMIN_PASS="admin" # LDAP administrator password
-echo 'KERO_HOME="/vagrant"' | sudo tee -a /etc/environment
-echo 'DOMAIN_NAME="fiuba.com"' | sudo tee -a /etc/environment
-echo 'LDAP_ADMIN_PASS="admin"' | sudo tee -a /etc/environment
-
 function install_k8s {
   sudo $KERO_HOME/scripts/install-docker
   sudo $KERO_HOME/scripts/install-kubeadm
@@ -25,7 +18,6 @@ function config_kubectl {
   sudo cp ${USER_HOME}/.kube/config ${KERO_HOME}/cache/
 }
 
-
 if [[ -z $1 ]]; then
   echo "Usage: $0 [first | master | slave] <IP>"
   exit 1
@@ -37,10 +29,12 @@ if [[ -z $2 ]]; then
 fi
 
 export NODE_IP=$2
+export KERO_HOME=$(pwd) # Home for all our project
+echo "KERO_HOME=\"$KERO_HOME\"" | sudo tee -a /etc/environment
 
 case $1 in
   first)
-    echo "first"
+    echo "Install KERO first node. This process could take some time..."
     install_k8s
     
     mkdir -p $KERO_HOME/cache
@@ -61,13 +55,13 @@ case $1 in
     echo "Copy the /cache folder dammit!"
     ;;
   master)
-    echo "master"
+    echo "Installing Kero master. This process could take some time..."
     install_k8s
     echo "$(cat ${KERO_HOME}/cache/join-master.sh) --experimental-control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
     config_kubectl
     ;;
   slave)
-    echo "slave"
+    echo "Installing Kero slave. This process could take some time..."
     install_k8s 
     echo "$(cat ${KERO_HOME}/cache/join.sh) --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
     
@@ -86,6 +80,6 @@ echo "KUBELET_EXTRA_ARGS=--node-ip ${NODE_IP}" | sudo tee -a /var/lib/kubelet/ku
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
-#$KERO_HOME/scripts/pull-images
+sudo $KERO_HOME/scripts/pull-images
 sudo cp $(find $KERO_HOME/scripts -type f) /usr/local/sbin
 sudo create-bricks

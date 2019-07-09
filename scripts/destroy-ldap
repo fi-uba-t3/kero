@@ -4,16 +4,28 @@ set +x
 
 export LDAP_IP="10.96.100.100"
 
-if [[ -z "$1" ]]; then
-    echo "INFO: No LDAP IP provided, defaulting to ${LDAP_IP}"
-else
-    export LDAP_IP="$1"    
+if [[ -z $1 ]]; then
+  echo "Usage: $0 LDAP_domain [ IP ]"
+  exit 1
 fi
+
+export DOMAIN_NAME="$1" # Domain name for LDAP
+export LDAP_ADMIN_PASS=""
+
+echo -n "Please enter your administrator password for ${DOMAIN_NAME}:"
+read -sr LDAP_ADMIN_PASS
+echo
 
 read -p "WARNING! If you proceed you will totally erase LDAP with all its info. Are you sure? " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
+fi
+
+if [[ -z "$2" ]]; then
+    echo "INFO: No LDAP IP provided, defaulting to ${LDAP_IP}"
+else
+    export LDAP_IP="$2"    
 fi
 
 envsubst < $KERO_HOME/services/ldap/ldap-server-deployment.yaml | kubectl delete -f -

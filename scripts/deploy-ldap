@@ -4,10 +4,22 @@ set +x
 
 export LDAP_IP="10.96.100.100"
 
-if [[ -z "$1" ]]; then
+if [[ -z $1 ]]; then
+  echo "Usage: $0 LDAP_domain [ IP ]"
+  exit 1
+fi
+
+export DOMAIN_NAME="$1" # Domain name for LDAP
+export LDAP_ADMIN_PASS=""
+
+echo -n "Please enter an administrator password for ${DOMAIN_NAME}:"
+read -sr LDAP_ADMIN_PASS
+echo
+
+if [[ -z "$2" ]]; then
     echo "INFO: No LDAP IP provided, defaulting to ${LDAP_IP}"
 else
-    export LDAP_IP="$1"    
+    export LDAP_IP="$2"    
 fi
 
 envsubst < $KERO_HOME/services/ldap/ldap-server-deployment.yaml | kubectl apply -f -
