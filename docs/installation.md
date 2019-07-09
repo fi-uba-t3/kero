@@ -105,3 +105,6 @@ If you find some box like the following, simply select _SKIP_:
 Once on the dashboard, you can monitor all pods, services and deployments on the KERO cluster.
 
 ** --- PLACEHOLDER --- *
+
+## Desktop spawner
+
