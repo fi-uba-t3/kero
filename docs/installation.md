@@ -12,7 +12,7 @@ This guide provides information on how to set up your KERO cluster and configure
 
 ## Setting up storage
 
-To set up the storage provisioner for the first time, ssh into a KERO machine with kubectl support and run the script `deploy-glfs`.
+To set up the storage provisioner for the first time, ssh into a KERO machine with kubectl support and invoke the command `deploy-glfs`.
  
 This script takes the _number of replicas_ and the _number of bricks per node_ as arguments:
 
@@ -21,8 +21,16 @@ This script takes the _number of replicas_ and the _number of bricks per node_ a
 
 An example usage of the script is:
 ```
-node-1$ bash /vagrant/scripts/deploy-glfs.sh 3 3
+node-1$ deploy-glfs 3 3
 ```
+
+`deploy-glfs` does the following Kubernetes operations:
+* Labels the storage nodes with `storagenode=glusterfs`. By default, every node in the cluster is a storage node.
+* Creates a DaemonSets, which instantiates a GlusterFS server on every storage node.
+* Executes `gluster peer probe` from and against every storage node.
+* Creates the StorageClass for GlusterFS with every node's `brickrootPaths`.
+* Binds the necessary ServiceAccount / ClusterRole
+* Creates a GlusterFS simple provisioner
 
 ## Configuring LDAP and user credentials
 
