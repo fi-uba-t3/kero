@@ -2,7 +2,13 @@
 
 This guide provides information on how to set up your KERO cluster and configure it to be ready to serve users.
 
-## Hardware requirements
+## Requirements
+
+* 4 GB RAM per node
+* 2 cores per node
+* All cluster nodes have to be configured and joined to the same network
+* OS with the following requirements:
+    - systemd
 
 ## Installing the first machine
 
@@ -105,3 +111,12 @@ If you find some box like the following, simply select _SKIP_:
 Once on the dashboard, you can monitor all pods, services and deployments on the KERO cluster.
 
 ** --- PLACEHOLDER --- *
+
+## Remote desktop service
+
+To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the API, ssh into a KERO machine with kubectl support and invoke the command `deploy-desktop-spawner`.
+
+`deploy-desktop-spawner` does the following Kubernetes operations:
+* Creates a Deployment, which instantiates a Desktop spawner API server on a node.
+* Waits for the API server to be running and ready.
+* Return its IP.
