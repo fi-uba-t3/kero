@@ -5,11 +5,13 @@ operate and maintain cluster's nodes. It contains several standard operation
 procedures for normal tasks (adding/removing _nodes_) as well as incident
 troubleshooting.
 
-## Adding/removing new hardware
+## Removing a broken node
 
-TODO
+To remove a broken node from the cluster run `destroy-node <broken-node>`.
+This will forcefully remove the node, and redeploy any service that was running
+there. The node can then be re-added with a clean install.
 
-## Replacing a faulty master node
+### Replacing a faulty master node
 
 When removing a master node follow the exact same procedure described for
 removing any node. The only difference is that another master must be brought
