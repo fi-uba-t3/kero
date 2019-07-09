@@ -9,13 +9,17 @@ troubleshooting.
 
 TODO
 
-## Replacing a faulty node (not master)
+## Replacing a faulty master node
 
-TODO
+When removing a master node follow the exact same procedure described for
+removing any node. The only difference is that another master must be brought
+up.
 
-## Replacing a faulty node (master)
-
-TODO
+To bring up a new master you can either:
+  - Add a new _node_ and install it as a master (following instructions of
+    installation guide)
+  - Choose an existing _node_ and run `upgrade-to-master` script. This script
+    will drain the _node_ and re-install it as a master.
 
 ## Volume migration
 
