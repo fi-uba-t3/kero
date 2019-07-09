@@ -7,6 +7,6 @@ provisioner: gluster.org/glusterfs-simple
 reclaimPolicy: Retain
 parameters:
   forceCreate: "true"
-  volumeType: "replica 4"
-  brickrootPaths: "10.0.0.2:/etc/kubernetes/bricks/brick0,10.0.0.3:/etc/kubernetes/bricks/brick0,10.0.0.4:/etc/kubernetes/bricks/brick0,10.0.0.5:/etc/kubernetes/bricks/brick0,10.0.0.2:/etc/kubernetes/bricks/brick1,10.0.0.3:/etc/kubernetes/bricks/brick1,10.0.0.4:/etc/kubernetes/bricks/brick1,10.0.0.5:/etc/kubernetes/bricks/brick1"
+  volumeType: "replica 3"
+  brickrootPaths: "10.0.0.2:/etc/kubernetes/bricks/brick0,10.0.0.3:/etc/kubernetes/bricks/brick0,10.0.0.4:/etc/kubernetes/bricks/brick0,10.0.0.5:/etc/kubernetes/bricks/brick0,10.0.0.2:/etc/kubernetes/bricks/brick1,10.0.0.3:/etc/kubernetes/bricks/brick1,10.0.0.4:/etc/kubernetes/bricks/brick1,10.0.0.5:/etc/kubernetes/bricks/brick1,10.0.0.2:/etc/kubernetes/bricks/brick2,10.0.0.3:/etc/kubernetes/bricks/brick2,10.0.0.4:/etc/kubernetes/bricks/brick2,10.0.0.5:/etc/kubernetes/bricks/brick2"
 

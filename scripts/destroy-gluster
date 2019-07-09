@@ -11,11 +11,11 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 vagrant ssh node-1 -c " \
-    kubectl delete daemonset glusterfs; \
-    kubectl delete sc glusterfs-simple; \
-    kubectl delete deployment glusterfs-simple-provisioner; \
-    kubectl delete pvc --all; \
-    kubectl delete pv --all;"
+    sudo kubectl delete daemonset glusterfs; \
+    sudo kubectl delete sc glusterfs-simple; \
+    sudo kubectl delete deployment glusterfs-simple-provisioner; \
+    sudo kubectl delete pvc --all; \
+    sudo kubectl delete pv --all;"
 
 for node in node-{1,2,3,4,5,6}; do
     vagrant ssh $node -c " \
@@ -23,9 +23,9 @@ for node in node-{1,2,3,4,5,6}; do
         sudo rmdir /etc/kubernetes/{brick,bricks}; \
         sudo $KERO_HOME/scripts/create-bricks; \
         sudo mkdir -p /etc/kubernetes/bricks/brick0 /etc/kubernetes/bricks/brick1  /etc/kubernetes/bricks/brick2; \
-        rm -rf /var/lib/misc/glusterfsd; \
-        rm -rf /etc/glusterfs; \
-        rm -rf /var/lib/glusterd;"
+        sudo rm -rf /var/lib/misc/glusterfsd; \
+        sudo rm -rf /etc/glusterfs; \
+        sudo rm -rf /var/lib/glusterd;"
 done
 
 echo "You are free of gluster, for now..."

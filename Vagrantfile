@@ -69,14 +69,14 @@ Vagrant.configure(2) do |config|
         end
       end
 
-      box.vm.provision "shell" do |s|
-        s.env = {
-            "NODE_IP"   => node_ip,
-            "NODE_ROLE" => node_role
-        }
-        s.privileged = true
-        s.path = "provision.sh"
-      end
+#      box.vm.provision "shell" do |s|
+#        s.env = {
+#            "NODE_IP"   => node_ip,
+#            "NODE_ROLE" => node_role
+#        }
+#        s.privileged = true
+#        s.path = "provision.sh"
+#      end
 
     end
   end
