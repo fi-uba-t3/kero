@@ -4,6 +4,10 @@ This guide provides information on how to set up your KERO cluster and configure
 
 ## Hardware requirements
 
+## Software requirements
+* OS with the following requirements:
+    - systemd
+
 ## Installing the first machine
 
 ## Installing master nodes
@@ -106,5 +110,11 @@ Once on the dashboard, you can monitor all pods, services and deployments on the
 
 ** --- PLACEHOLDER --- *
 
-## Desktop spawner
+## Remote desktop service
 
+To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the API, ssh into a KERO machine with kubectl support and invoke the command `deploy-desktop-spawner`.
+
+`deploy-desktop-spawner` does the following Kubernetes operations:
+* Creates a Deployment, which instantiates a Desktop spawner API server on a node.
+* Waits for the API server to be running and ready.
+* Return its IP.
