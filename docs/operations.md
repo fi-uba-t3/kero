@@ -4,9 +4,9 @@ This guides provides useful information for cluster administrators on how to ope
 
 ## Removing a broken node
 
-To remove a broken node from the cluster run `destroy-node <broken-node>`.
+To remove a broken node from the cluster run the `destroy-node <broken-node>` command on any functional machine.
 
-This will forcefully remove the node, and redeploy any service that was running there. The node can then be re-added with a clean install.
+This will forcefully remove the node, and redeploy any service that was running there. The node can then be fixed and re-added with a clean install.
 
 ### Replacing a faulty master node
 

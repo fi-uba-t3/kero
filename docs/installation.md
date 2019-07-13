@@ -4,26 +4,45 @@ This guide provides information on how to set up your KERO cluster and configure
 
 ## Requirements
 
-* 4 GB RAM per node
-* 2 cores per node
-* All cluster nodes have to be configured and joined to the same network
-* OS with the following requirements:
-    - systemd
+Each machine of a KERO cluster should meet the following minimum requirements:
+
+* 4 GB RAM
+* 2 cores and 64-bits processor
+* A debian based OS with systemd
+
+Additionally, all cluster nodes have to be configured and joined to the same network.
 
 ## Installing the first machine
 
+To bring up the first node of the KERO cluster, copy the contents of the KERO installer on the desired machine and just run the `installation.sh` script providing `first` as argument. This is, run `bash installation.sh first` on the first KERO node.
+
+Please note that you will need an internet connection during the installation process.
+
+The installation script will start, and perform the following operations:
+* Set up a `KERO_HOME` environment variable, with the location where you copied the KERO installer.
+* Install and configure Docker, etcd and Kubernetes.
+* Generate a `cache` folder with a secret token and some scripts to join the KERO cluster. **Important**: please copy this `cache` directory on the installation folder of all nodes you want to join the KERO cluster.
+* Pull all Docker images used by the various provided services.
+* Set up all KERO commands (by copying them to the `/usr/local/sbin` folder).
+
+After the installation completes, you should be able to see the first node as the only member of the cluster by running `kubectl get nodes` with the same user which installed KERO.
+
 ## Installing master nodes
+
+
 
 ## Installing slave nodes
 
+
+
 ## Setting up storage
 
-To set up the storage provisioner for the first time, ssh into a KERO machine with kubectl support and invoke the command `deploy-glfs`.
+To set up the storage provisioner for the first time, invoke the command `deploy-glfs` from any machine on the KERO cluster.
  
 This script takes the _number of replicas_ and the _number of bricks per node_ as arguments:
 
 * _number of replicas_: Determines how many copies of every file are going to be distributed across the cluster.
-* _number of bricks per node_: Determines how many glusterfs bricks are available to use on every node. By default, the number of bricks per node created on provision is 3.
+* _number of bricks per node_: Determines how many glusterfs bricks are available to use on every node.
 
 An example usage of the script is:
 ```
@@ -31,12 +50,12 @@ node-1$ deploy-glfs 3 3
 ```
 
 `deploy-glfs` does the following Kubernetes operations:
-* Labels the storage nodes with `storagenode=glusterfs`. By default, every node in the cluster is a storage node.
-* Creates a DaemonSets, which instantiates a GlusterFS server on every storage node.
-* Executes `gluster peer probe` from and against every storage node.
-* Creates the StorageClass for GlusterFS with every node's `brickrootPaths`.
-* Binds the necessary ServiceAccount / ClusterRole
-* Creates a GlusterFS simple provisioner
+* Label the storage nodes with `storagenode=glusterfs`. By default, every node in the cluster is a storage node.
+* Create a DaemonSets, which instantiates a GlusterFS server on every storage node.
+* Execute `gluster peer probe` from and against every storage node.
+* Create the StorageClass for GlusterFS with every node's `brickrootPaths`.
+* Bind the necessary ServiceAccount / ClusterRole
+* Create a GlusterFS simple provisioner
 
 ## Configuring LDAP and user credentials
 
@@ -114,9 +133,9 @@ Once on the dashboard, you can monitor all pods, services and deployments on the
 
 ## Remote desktop service
 
-To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the API, ssh into a KERO machine with kubectl support and invoke the command `deploy-desktop-spawner`.
+To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the desktop spawner API from a Kero cluster machine just invoke the command `deploy-desktop-spawner`.
 
 `deploy-desktop-spawner` does the following Kubernetes operations:
 * Creates a Deployment, which instantiates a Desktop spawner API server on a node.
-* Waits for the API server to be running and ready.
-* Return its IP.
+* Waits for the desktop spawner API server to be running and ready.
+* Return the new desktop spawner service IP.
