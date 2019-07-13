@@ -81,7 +81,7 @@ node-1$ deploy-glfs 3 3
 
 ## Configuring LDAP and user credentials
 
-With your shared storage already setted, you can now deploy the users administration service based on OpenLDAP. In order to do that, simply run the `deploy-ldap` command on any machine with kubectl support.
+With your shared storage already setted, you can now deploy the users administration service based on OpenLDAP. In order to do that, simply run the `deploy-ldap` command on any KERO machine providing the domain name for your organization (for instance, `fiuba.com`).
 
 The `deploy-ldap` script can optionally take the desired LDAP server IP as argument (it defaults to 10.96.100.100).
 
@@ -147,11 +147,11 @@ After being deployed, you can check the monitoring dashboard on the IP provided 
 
 If you find some box like the following, simply select _SKIP_:
 
-** --- PLACEHOLDER --- **
+![](./img/dashboard_skip.png)
 
 Once on the dashboard, you can monitor all pods, services and deployments on the KERO cluster.
 
-** --- PLACEHOLDER --- *
+![](./img/dashboard.png)
 
 ## Remote desktop service
 
