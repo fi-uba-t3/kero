@@ -1,6 +1,6 @@
 # Architecture
 
-The main objective of this project is to provide various services to a private network using desktop computers with heterogeneous specifications as hardware. To the end user, all computers look the same. On the inside, we combine a well known container orchestrator to deploy services and desktops for our users.
+The main goal of this project is to provide various services with a private network using desktop computers with heterogeneous specifications as hardware. To the end user, all computers look the same. On the inside, we combine a well known container orchestrator and specific services to provide work desktops for employees.
 
 The set of machines that form part of the platform is called _cluster_. Any
 single machine in the _cluster_ may be referred as a _node_. This set
@@ -67,17 +67,6 @@ These controllers include:
 * Replication Controller: Responsible for maintaining the correct number of pods for every replication controller object in the system.
 * Endpoints Controller: Populates the Endpoints object (that is, joins Services & Pods).
 * Service Account & Token Controllers: Create default accounts and API access tokens for new namespaces.
-
-### Meta orchestrator
-Set up scripts typically start all master components on the same machines, and do not run user containers on this machine. But because we want all machines to look the same, and we don't rely on the same machines to be functional forever, we implement a service to orchestrate master nodes. This meta orchestrator is responsible for implementing the K8s self-healing feature at node level.
-
-The meta orchestrator service is deployed on K8s that monitors master node health and readiness conditions. If a kubelet fails to update these variables, and a given time passes, the service assumes the master is gone. A non-master node is chosen and "crowned". This process consists of the following:
-* The old master is deleted from the cluster
-* A non-master node is chosen, based on a combination of system requirements and few, low priority, scheduled pods.
-* The chosen node is drained and rebooted
-* New master is configured and master components deployed
-
-New or repaired machines can join the cluster by running the installer.
 
 ## Desktops
 
