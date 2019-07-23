@@ -14,7 +14,7 @@ Additionally, all cluster nodes have to be configured and joined to the same net
 
 ## Installing the first machine
 
-To bring up the first node of the KERO cluster, copy the contents of the KERO installer on the desired machine and just run the `installation.sh` script providing `first` as argument. This is, run `bash installation.sh first` on the first KERO node.
+To bring up the first node of the KERO cluster, copy the contents of the KERO installer on the desired machine and just run the `installation.sh` script providing `first` as argument. This is, run `bash installation.sh first <node-IP>` on the first KERO node.
 
 Please note that you will need an internet connection during the installation process.
 
