@@ -22,7 +22,7 @@ spec:
           value: "false"
         - name: PHPLDAPADMIN_LDAP_HOSTS
           value: 127.0.0.1
-        image: osixia/phpldapadmin
+        image: osixia/phpldapadmin:0.8.0
         ports:
         - containerPort: 80
       - name: ldap-host
@@ -39,7 +39,7 @@ spec:
           value: "true"
         - name: LDAP_REPLICATION_HOSTS
           value: "ldap://ldap-0.ldap-svc.default.svc.cluster.local,ldap://ldap-1.ldap-svc.default.svc.cluster.local,ldap://ldap-2.ldap-svc.default.svc.cluster.local"
-        image: osixia/openldap
+        image: osixia/openldap:1.2.4
         ports:
         - containerPort: 389
         - containerPort: 636
