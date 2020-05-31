@@ -47,6 +47,7 @@ metadata:
   name: desk-spawner-svc
 spec:
   externalName: desk-spawner-svc
+  type: NodePort
   ports:
   - name: admin-panel-tcp
     protocol: TCP

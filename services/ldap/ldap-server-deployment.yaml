@@ -58,6 +58,7 @@ metadata:
   name: ldap-svc
 spec:
   externalName: ldap-svc
+  type: NodePort
   ports:
   - name: admin-panel-tcp
     protocol: TCP
