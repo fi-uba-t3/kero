@@ -1,0 +1,15 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/mail/mail-deployment.yaml | kubectl apply -f -
+
+MAIL_STATUS=$(kubectl get pods | grep mailserver | awk '{print $3}') 
+while [ $MAIL_STATUS != "Running" ]; do
+    echo "Waiting for mail server deployment (status: ${MAIL_STATUS})"
+    sleep 6
+    MAIL_STATUS=$(kubectl get pods | grep mailserver | awk '{print $3}')
+done
+
+MAIL_SERVER_IP=$(kubectl get endpoints | grep mailserver | awk '{print $2}')
+echo "Connect to mail server on ${MAIL_SERVER_IP}"
