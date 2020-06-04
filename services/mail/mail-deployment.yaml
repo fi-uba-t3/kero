@@ -158,51 +158,54 @@ spec:
       subdomain: mail
       volumes:
         - name: config
-          persistentVolumeClaim:
-            claimName: mail-config
+          emptyDir: {}
+          # persistentVolumeClaim:
+          #   claimName: mail-config
         - name: opendkim-keys
-          persistentVolumeClaim:
-            claimName: mail-keys
+          emptyDir: {}
+          # persistentVolumeClaim:
+          #   claimName: mail-keys
         - name: data
-          persistentVolumeClaim:
-            claimName: mail-storage
+          emptyDir: {}
+          # persistentVolumeClaim:
+          #   claimName: mail-storage
       restartPolicy: Always
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mail-config
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Mi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mail-keys
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Mi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mail-storage
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Mi
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: mail-config
+#   annotations:
+#     volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 100Mi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: mail-keys
+#   annotations:
+#     volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 100Mi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: mail-storage
+#   annotations:
+#     volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 100Mi
