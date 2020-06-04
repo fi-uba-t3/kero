@@ -13,7 +13,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 5
       containers:
-      - name: ldap-admin 
+      - name: ldap-admin
         env:
         - name: PHPLDAPADMIN_HTTPS
           value: "false"
@@ -32,7 +32,7 @@ spec:
           value: ${DOMAIN_NAME}
         - name: LDAP_ORGANISATION
           value: FIUBA
-        image: osixia/openldap:1.2.4
+        image: kajachuan/openldap-postfix-book
         ports:
         - containerPort: 389
         - containerPort: 636
@@ -41,9 +41,6 @@ spec:
             mountPath: "/etc/ldap/slapd.d"
           - name: gluster-ldap
             mountPath: "/var/lib/ldap"
-          - name: postfix-book
-            mountPath: "/container/service/slapd/assets/config/bootstrap/ldif/custom/postfix-book.ldif"
-        args: ["--copy-service"]
       volumes:
       - name: gluster-ldap
         persistentVolumeClaim:
@@ -51,10 +48,6 @@ spec:
       - name: gluster-sldap
         persistentVolumeClaim:
           claimName: sldap-claim
-      - name: postfix-book
-        hostPath:
-          path: ${KERO_HOME}/services/mail/postfix-book.ldif
-          type: File
       restartPolicy: Always
 ---
 apiVersion: v1
