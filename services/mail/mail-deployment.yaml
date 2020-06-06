@@ -29,6 +29,7 @@ data:
   SASLAUTHD_LDAP_BIND_DN: cn=admin,dc=fiuba,dc=com
   SASLAUTHD_LDAP_PASSWORD: admin
   SASLAUTHD_LDAP_SEARCH_BASE: ou=People,dc=fiuba,dc=com
+  SASLAUTHD_LDAP_FILTER: (&(uid=%U)(objectClass=posixAccount))
   POSTMASTER_ADDRESS: kcajachuan@fi.uba.ar
   POSTFIX_MESSAGE_SIZE_LIMIT: "100000000"
 ---
