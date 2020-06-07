@@ -296,7 +296,7 @@ spec:
         app.kubernetes.io/instance: ingress-nginx
         app.kubernetes.io/component: controller
     spec:
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: ClusterFirst
       hostNetwork: true
       containers:
         - name: controller
@@ -315,6 +315,7 @@ spec:
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+            - "--report-node-internal-ip-address=true"
           securityContext:
             capabilities:
               drop:
