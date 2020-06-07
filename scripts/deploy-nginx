@@ -4,9 +4,10 @@ set +x
 
 envsubst < $KERO_HOME/services/nginx/nginx-deployment.yaml | kubectl apply -f -
 
-NGINX_STATUS=$(kubectl get pods --namespace=ingress-nginx | grep ingress-nginx-controller | awk '{print $3}') 
-while [ $NGINX_STATUS != "Running" ]; do
-    echo "Waiting for nginx deployment (status: ${NGINX_STATUS})"
-    sleep 6
-    NGINX_STATUS=$(kubectl get pods --namespace=ingress-nginx | grep ingress-nginx-controller | awk '{print $3}') 
+count="$(kubectl get pods --no-headers --namespace=ingress-nginx | grep ingress-nginx-controller  | awk '{print $3}' | grep Running | wc -l)"
+while [ "$count" -lt "$NODE_COUNT" ]; do
+  echo "Waiting for nginx: $count / $NODE_COUNT"
+  sleep 5
+  count="$(kubectl get pods --no-headers --namespace=ingress-nginx | grep ingress-nginx-controller | sed -e s/[\\n\\r]//g | awk '{print $3}' | grep -o Running | wc -l)"
 done
+echo "nginx is now Running: $count / $NODE_COUNT"

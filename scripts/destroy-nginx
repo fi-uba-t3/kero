@@ -1,0 +1,5 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/nginx/nginx-deployment.yaml | kubectl delete -f -
