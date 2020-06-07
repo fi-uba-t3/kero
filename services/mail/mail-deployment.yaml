@@ -13,7 +13,7 @@ data:
   ONE_DIR: "1"
   DMS_DEBUG: "0"
   ENABLE_LDAP: "1"
-  LDAP_SERVER_HOST: "10.96.100.100"
+  LDAP_SERVER_HOST: ${LDAP_IP}
   LDAP_SEARCH_BASE: ou=People,dc=fiuba,dc=com
   LDAP_BIND_DN: cn=admin,dc=fiuba,dc=com
   LDAP_BIND_PW: admin
@@ -25,7 +25,7 @@ data:
   DOVECOT_USER_FILTER: (&(objectClass=PostfixBookMailAccount)(uid=%n))
   ENABLE_SASLAUTHD: "1"
   SASLAUTHD_MECHANISMS: ldap
-  SASLAUTHD_LDAP_SERVER: "10.96.100.100"
+  SASLAUTHD_LDAP_SERVER: ${LDAP_IP}
   SASLAUTHD_LDAP_BIND_DN: cn=admin,dc=fiuba,dc=com
   SASLAUTHD_LDAP_PASSWORD: admin
   SASLAUTHD_LDAP_SEARCH_BASE: ou=People,dc=fiuba,dc=com
@@ -61,7 +61,7 @@ spec:
     - name: imap-secure
       port: 993
       targetPort: imap-secure
-  clusterIP: "10.98.100.100"
+  clusterIP: ${MAIL_IP}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -170,53 +170,22 @@ spec:
       volumes:
         - name: config
           emptyDir: {}
-          # persistentVolumeClaim:
-          #   claimName: mail-config
         - name: opendkim-keys
           emptyDir: {}
-          # persistentVolumeClaim:
-          #   claimName: mail-keys
         - name: data
-          emptyDir: {}
-          # persistentVolumeClaim:
-          #   claimName: mail-storage
+          persistentVolumeClaim:
+            claimName: mail-storage
       restartPolicy: Always
 ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: mail-config
-#   annotations:
-#     volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: 100Mi
-# ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: mail-keys
-#   annotations:
-#     volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: 100Mi
-# ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: mail-storage
-#   annotations:
-#     volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: 100Mi
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mail-storage
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
