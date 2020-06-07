@@ -43,6 +43,9 @@ spec:
   selector:
     app: mailserver
   ports:
+    - name: client-tcp
+      port: 80
+      targetPort: tcp
     - name: smtp
       port: 25
       targetPort: smtp
@@ -58,6 +61,7 @@ spec:
     - name: imap-secure
       port: 993
       targetPort: imap-secure
+  clusterIP: "10.98.100.100"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -76,6 +80,12 @@ spec:
         tier: backend
     spec:
       containers:
+      - name: rainloop
+        image: solidnerd/rainloop
+        ports:
+          - name: tcp
+            containerPort: 80
+            protocol: TCP
       - name: docker-mailserver
         image: tvial/docker-mailserver:latest
         imagePullPolicy: Always
