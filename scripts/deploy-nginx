@@ -1,0 +1,12 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/nginx/nginx-deployment.yaml | kubectl apply -f -
+
+NGINX_STATUS=$(kubectl get pods --namespace=ingress-nginx | grep ingress-nginx-controller | awk '{print $3}') 
+while [ $NGINX_STATUS != "Running" ]; do
+    echo "Waiting for nginx deployment (status: ${NGINX_STATUS})"
+    sleep 6
+    NGINX_STATUS=$(kubectl get pods --namespace=ingress-nginx | grep ingress-nginx-controller | awk '{print $3}') 
+done

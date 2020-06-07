@@ -55,3 +55,19 @@ spec:
     targetPort: 5000
   selector:
     application: desk-spawner
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+ name: desktop-spawner-ingress
+ annotations:
+   nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+ rules:
+ - host: kero.desktop-spawner.io
+   http:
+     paths:
+     - path: /
+       backend:
+         serviceName: desktop-spawner-svc
+         servicePort: 80
