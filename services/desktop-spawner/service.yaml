@@ -61,7 +61,7 @@ kind: Ingress
 metadata:
  name: desk-spawner-ingress
  annotations:
-   nginx.ingress.kubernetes.io/rewrite-target: /$1
+   nginx.ingress.kubernetes.io/add-base-url: "true"
 spec:
  rules:
  - host: kero.desk-spawner.io

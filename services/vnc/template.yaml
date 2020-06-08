@@ -75,7 +75,7 @@ kind: Ingress
 metadata:
  name: headless-vnc-${VNC_USERNAME}-ingress
  annotations:
-   nginx.ingress.kubernetes.io/rewrite-target: /$1
+   nginx.ingress.kubernetes.io/add-base-url: "true"
 spec:
  rules:
  - host: kero.vnc-${VNC_USERNAME}.io
