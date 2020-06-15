@@ -19,7 +19,7 @@ spec:
           value: "false"
         - name: PHPLDAPADMIN_LDAP_HOSTS
           value: 127.0.0.1
-        image: osixia/phpldapadmin
+        image: osixia/phpldapadmin:0.8.0
         ports:
         - containerPort: 80
       - name: ldap-host
@@ -32,7 +32,7 @@ spec:
           value: ${DOMAIN_NAME}
         - name: LDAP_ORGANISATION
           value: FIUBA
-        image: osixia/openldap
+        image: osixia/openldap:1.2.4
         ports:
         - containerPort: 389
         - containerPort: 636
