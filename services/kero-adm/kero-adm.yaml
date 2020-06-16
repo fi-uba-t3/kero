@@ -1,7 +1,66 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-app: kero-admin-user
+  name: kero-admin-user
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kero-admin-user-minimal
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["kero-admin-user-key-holder", "kero-admin-user-certs", "kero-admin-user-csrf"]
+  verbs: ["get", "update", "delete"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceNames: ["kero-admin-user-settings"]
+  verbs: ["get", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kero-admin-user-minimal
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kero-admin-user-minimal
+subjects:
+- kind: ServiceAccount
+  name: kero-admin-user
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: kero-admin-user
+  labels:
+    k8s-app: kero-admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: kero-admin-user
+  namespace: default
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kero-adm
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -16,7 +75,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
       - name: kero-adm
-        image: joaquintz/kero_adm:0.04
+        image: joaquintz/kero_adm:0.05
         ports:
         - containerPort: 5000
         env:
@@ -24,6 +83,22 @@ spec:
           value: 10.96.100.100
         - name: LDAP_DN
           value: fiuba.com
+        - name: KUBECONFIG
+          value: /etc/kubernetes/admin.conf
+        volumeMounts:
+          - mountPath: /etc/kubernetes
+            name: config
+        resources:
+          limits:
+            ephemeral-storage: 15Mi
+          requests:
+            ephemeral-storage: 10Mi
+      serviceAccountName: kero-admin-user
+      volumes:
+      - name: config
+        hostPath:
+          path: /etc/kubernetes
+          type: Directory
 ---
 apiVersion: v1
 kind: Service
@@ -31,6 +106,7 @@ metadata:
   labels:
     application: kero-adm
   name: kero-adm-svc
+  namespace: default
 spec:
   externalName: kero-adm-svc
   ports:
