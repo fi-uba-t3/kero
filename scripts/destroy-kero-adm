@@ -1,0 +1,5 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/kero-adm/kero-adm.yaml | kubectl delete -f -
