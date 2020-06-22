@@ -1,0 +1,76 @@
+{% include 'header.html' %}
+<!-- Main Content -->
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+      <h1 class="h3 mb-2 text-gray-800">Lista de usuarios</h1>
+      <p class="mb-4">Esta tabla tiene la lista de los usuarios en el sistema. Podés agregar un nuevo usuario <a href="/new_user">acá</a>.</p>
+
+      <!-- DataTales Example -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Usuarios</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Nombres</th>
+                  <th>Apellidos</th>
+                  <th>Grupo primario</th>
+                  <th>Grupos secundarios</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Nombres</th>
+                  <th>Apellidos</th>
+                  <th>Grupo primario</th>
+                  <th>Grupos secundarios</th>
+                  <th>Acciones</th>
+                </tr>
+              </tfoot>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>{{user["username"][0]}}</td>
+                  <td>{{user["first_name"][0]}}</td>
+                  <td>{{user["last_name"][0]}}</td>
+                  <td>
+                    {{",".join(user["groups"])}}
+
+                  </td>
+                  <td>{{", ".join(secondary_members_mapping[user["username"][0]]) }}</td>
+                  <td>
+                    <a href="/groups/user/{{user['username'][0]}}" class="btn btn-secondary btn-icon-split btn-sm">
+                      <span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span>
+                      <span class="text">Grupos</span>
+                    </a>
+
+                    <a href="/delete_user/{{user['username'][0]}}" class="btn btn-danger btn-icon-split btn-sm">
+                      <span class="icon text-white-50"><i class="fas fa-trash"></i></span>
+                      <span class="text">Borrar</span>
+                    </a>
+
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+  </div>
+  <!-- End of Main Content -->
+{% include 'footer.html' %}

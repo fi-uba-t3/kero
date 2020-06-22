@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/kero-adm/kero-adm.yaml | kubectl apply -f -
+
+SPAWNER_STATUS=$(kubectl get pods --all-namespaces | grep kero-adm | awk '{print $4}')
+while [[ $SPAWNER_STATUS != "Running" ]]; do
+    echo "Waiting for kero-adm deployment (status: ${SPAWNER_STATUS})"
+    sleep 6
+    SPAWNER_STATUS=$(kubectl get pods | grep kero-adm | awk '{print $3}')
+done
+
+SPAWNER_IP=$(kubectl get svc --no-headers | grep "kero-adm-svc" | awk '{print $3}')
+
+echo "Connect to kero-adm on ${SPAWNER_IP}"
