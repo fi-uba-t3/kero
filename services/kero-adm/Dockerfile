@@ -13,4 +13,4 @@ ADD static /app/static
 ADD templates /app/templates
 ADD *.py /app/
 
-CMD [ "python", "/app/dashboard.py" ]
+CMD [ "python", "/app/dashboard.py"]

@@ -75,7 +75,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
       - name: kero-adm
-        image: joaquintz/kero_adm:0.05
+        image: joaquintz/kero_adm:0.07
         ports:
         - containerPort: 5000
         env:
@@ -90,9 +90,9 @@ spec:
             name: config
         resources:
           limits:
-            ephemeral-storage: 15Mi
+            ephemeral-storage: 150Mi
           requests:
-            ephemeral-storage: 10Mi
+            ephemeral-storage: 100Mi
       serviceAccountName: kero-admin-user
       volumes:
       - name: config
