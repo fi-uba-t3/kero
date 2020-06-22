@@ -3,6 +3,7 @@ import logging
 import hashlib
 from flask import Flask, render_template, request, redirect, make_response
 from ldapmanager import LDAPManager
+from monitor import KubeMonitor
 
 logging.basicConfig(level=logging.INFO)
 
@@ -14,9 +15,7 @@ mgr = LDAPManager(
     host=os.getenv("LDAP_IP", "localhost"),
     dn=os.getenv("LDAP_DN", "fiuba.com"))
 
-#TODO: check hierarchy
-#TODO: login w/cookie
-impressions = 0
+mon = KubeMonitor()
 
 @app.before_first_request
 def check_ldap_status():
@@ -122,14 +121,11 @@ def new_user_form():
     if request.cookies.get("session", "") != app.config["LDAP_PASSWORD_SHA224"]:
         return redirect("/login")
 
-    global impressions
-    impressions+=1
     groups = mgr.find_groups()
-    return render_template("new_user.html", current_page="new_user", groups=groups, impressions=impressions)
+    return render_template("new_user.html", current_page="new_user", groups=groups)
 
 @app.route("/new_user", methods=["POST"])
 def new_user():
-    global impressions
     if request.cookies.get("session", "") != app.config["LDAP_PASSWORD_SHA224"]:
         return redirect("/login")
 
@@ -138,29 +134,25 @@ def new_user():
     success = status == mgr.OK
     error = "" if success else status
     groups = mgr.find_groups()
-    return render_template("new_user.html", current_page="new_user", impressions=impressions,
+    return render_template("new_user.html", current_page="new_user",
                            success=success, error=error, groups=groups)
 
 @app.route("/new_group", methods=["GET"])
 def new_group_form():
-    global impressions
     if request.cookies.get("session", "") != app.config["LDAP_PASSWORD_SHA224"]:
         return redirect("/login")
 
-    impressions+=1
-    return render_template("new_group.html", current_page="new_group", impressions=impressions)
+    return render_template("new_group.html", current_page="new_group")
 
 @app.route("/new_group", methods=["POST"])
 def new_group():
-    global impressions
     if request.cookies.get("session", "") != app.config["LDAP_PASSWORD_SHA224"]:
         return redirect("/login")
 
-    impressions+=1
     status = mgr.add_group(request.form["groupName"])
     success = status == mgr.OK
     error = "" if success else status
-    return render_template("new_group.html", current_page="new_group", impressions=impressions,
+    return render_template("new_group.html", current_page="new_group",
                            success=success, error=error)
 
 @app.route("/delete_user/<username>", methods=["GET"])
@@ -186,12 +178,21 @@ def delete_user(username):
         username=username, error=error, success=success)
 
 
-@app.route("/monitoreo")
-def monitor():
+@app.route("/monitor/services")
+def list_services():
     if request.cookies.get("session", "") != app.config["LDAP_PASSWORD_SHA224"]:
         return redirect("/login")
 
-    return render_template("monitoreo.html", current_page="monitor")
+    services = mon.get_services_status()
+    return render_template("service_list.html", current_page="services", services=services)
+
+@app.route("/monitor/pods")
+def list_pods():
+    if request.cookies.get("session", "") != app.config["LDAP_PASSWORD_SHA224"]:
+        return redirect("/login")
+
+    pods = mon.get_pods_status()
+    return render_template("pod_list.html", current_page="pods", pods=pods)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
