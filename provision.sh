@@ -6,7 +6,7 @@ export KERO_HOME="/vagrant" # Home for all our project
 export DOMAIN_NAME="fiuba.com" # Domain name for LDAP
 export LDAP_ADMIN_PASS="admin" # LDAP administrator password
 echo 'KERO_HOME="/vagrant"' | sudo tee -a /etc/environment
-echo 'DOMAIN_NAME="kaibacorp.com"' | sudo tee -a /etc/environment
+echo 'DOMAIN_NAME="fiuba.com"' | sudo tee -a /etc/environment
 echo 'LDAP_ADMIN_PASS="admin"' | sudo tee -a /etc/environment
 
 $KERO_HOME/scripts/install-docker
