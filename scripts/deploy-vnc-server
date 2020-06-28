@@ -22,6 +22,7 @@ echo
 ## Using LDAP to validate password and get user id
 LDAP_CLUSTER_IP=$(kubectl get svc | grep ldap-svc | awk {'print $3'})
 VNC_USERID=$(curl -s "ldap://${LDAP_CLUSTER_IP}:389/uid=${VNC_USERNAME},ou=People,dc=fiuba,dc=com" -u "uid=${VNC_USERNAME},ou=People,dc=fiuba,dc=com":${VNC_PASS} | grep "uidNumber:" | awk '{print $2}')
+VNC_GROUP=$(curl -s "ldap://${LDAP_CLUSTER_IP}:389/uid=${VNC_USERNAME},ou=People,dc=fiuba,dc=com" -u "uid=${VNC_USERNAME},ou=People,dc=fiuba,dc=com":${VNC_PASS} | grep "gidNumber:" | awk '{print $2}')
 
 if [[ -z "$VNC_USERID" ]]; then
     echo "Error: Invalid credentials"
@@ -35,6 +36,7 @@ export VNC_PORT=$((30001 + VNC_USERID))
 
 envsubst < $KERO_HOME/services/vnc/template.yaml | kubectl apply -f -
 envsubst < $KERO_HOME/services/vnc/pvc-template.yaml | kubectl apply -f -
+envsubst < $KERO_HOME/services/vnc/pvc-group.yaml | kubectl apply -f -
 kubectl apply -f $KERO_HOME/services/vnc/pvc-shared.yaml
 
 VNC_STATUS=$(kubectl get pods | grep "vnc-${VNC_USERNAME}" | awk '{print $3}')
