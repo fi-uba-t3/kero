@@ -109,6 +109,7 @@ metadata:
   namespace: default
 spec:
   externalName: kero-adm-svc
+  type: NodePort
   ports:
   - name: kero-adm-tcp
     protocol: TCP
@@ -116,3 +117,19 @@ spec:
     targetPort: 5000
   selector:
     application: kero-adm
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+ name: kero-adm-ingress
+ annotations:
+   nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+ rules:
+ - host: kero.kero-admin.io
+   http:
+     paths:
+     - path: /
+       backend:
+         serviceName: kero-adm-svc
+         servicePort: 80

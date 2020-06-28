@@ -37,12 +37,10 @@ Vagrant.configure(2) do |config|
     name = BASENAME+index
 
     node_ip = node['ip']
-    node_public_ip = node['public_ip']
     node_role = node['role']
     node_disks = node['disks']
 
     config.vm.define name do |box|
-      box.vm.network "public_network", ip: node_public_ip
       box.vm.network "private_network", ip: node_ip
       box.vm.hostname = name
 
