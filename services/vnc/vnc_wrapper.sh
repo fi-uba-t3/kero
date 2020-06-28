@@ -18,6 +18,7 @@ echo "${VNC_USER}:x:${VNC_USER_ID}:${VNC_USER_GROUPID}:${VNC_USER}:/home/users/$
 su -m ${VNC_USER} -c "date"
 chown ${VNC_USER_ID} /home/users/${VNC_USER}
 chgrp 500 /mnt/shared
+chgrp 500 /home/users/${VNC_USER_GROUPID}/
 
 echo "Running vnc_startup"
 su -m ${VNC_USER} /dockerstartup/vnc_startup.sh "$@"

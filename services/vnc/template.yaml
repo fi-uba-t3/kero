@@ -24,6 +24,8 @@ spec:
             mountPath: "/mnt/shared"
           - name: gluster-home
             mountPath: "/home/users/${VNC_USERNAME}/"
+          - name: gluster-group
+            mountPath: "/home/users/${VNC_GROUP}/"
         env:
           - name: VNC_USER
             value: ${VNC_USERNAME}
@@ -46,6 +48,9 @@ spec:
       - name: gluster-shared
         persistentVolumeClaim:
           claimName: shared-claim
+      - name: gluster-group
+        persistentVolumeClaim:
+          claimName: group-claim-${VNC_GROUP}
       - name: gluster-home
         persistentVolumeClaim:
           claimName: home-claim-${VNC_USERNAME}
