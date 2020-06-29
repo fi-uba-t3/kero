@@ -75,7 +75,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
       - name: kero-adm
-        image: joaquintz/kero_adm:0.07
+        image: joaquintz/kero_adm:0.09
         ports:
         - containerPort: 5000
         env:

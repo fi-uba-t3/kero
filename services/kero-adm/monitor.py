@@ -1,3 +1,4 @@
+import logging
 from kubernetes import client, config
 
 # Run this on a VM to test
@@ -23,15 +24,20 @@ class KubeMonitor:
                 "host_ip": pod.status.host_ip,
                 "pod_ip": pod.status.pod_ip
             }
-            pods_list.apend(pod_dict)
+            pods_list.append(pod_dict)
         return pods_list
     def get_services_status(self):
         ret = self.v1.list_service_for_all_namespaces(watch=False)
         service_list = []
         for service in ret.items:
+            spec = service.spec.to_dict()
+            # Older versions of kubernetes incorrectly mapped external ip
+            # as external_i_ps
+            external_ip = spec.get("external_i_ps", spec.get("external_ip", None))
+
             service_dict = {
                 "cluster_ip": service.spec.cluster_ip,
-                "external_ip": service.spec.external_ip,
+                "external_ip": external_ip,
                 "namespace": service.metadata.namespace,
                 "name": service.metadata.name,
                 "creation_timestamp": service.metadata.creation_timestamp

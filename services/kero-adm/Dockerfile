@@ -6,11 +6,11 @@ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/s
 apt-get update && \
 apt-get install -y kubectl gettext libsasl2-dev libldap2-dev libssl-dev
 
-RUN pip install flask python-ldap kubernetes
+RUN pip install flask python-ldap kubernetes gunicorn
 
 WORKDIR /app
 ADD static /app/static
 ADD templates /app/templates
 ADD *.py /app/
 
-CMD [ "python", "/app/dashboard.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "dashboard:app"]
