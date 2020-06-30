@@ -8,5 +8,5 @@ reclaimPolicy: Retain
 parameters:
   forceCreate: "true"
   volumeType: "replica 2"
-  brickrootPaths: "10.0.0.2:/etc/kubernetes/bricks/brick0,10.0.0.4:/etc/kubernetes/bricks/brick0"
+  brickrootPaths: "10.0.0.2:/etc/kubernetes/bricks/brick0,10.0.0.4:/etc/kubernetes/bricks/brick0,10.0.0.2:/etc/kubernetes/bricks/brick1,10.0.0.4:/etc/kubernetes/bricks/brick1"
 

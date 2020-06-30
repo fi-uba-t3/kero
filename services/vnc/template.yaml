@@ -69,3 +69,19 @@ spec:
     targetPort: 5901
   selector:
     application: headless-vnc-${VNC_USERNAME}
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+ name: headless-vnc-${VNC_USERNAME}-ingress
+ annotations:
+   nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+ rules:
+ - host: kero.vnc-${VNC_USERNAME}.io
+   http:
+     paths:
+     - path: /
+       backend:
+         serviceName: headless-vnc-svc-${VNC_USERNAME}
+         servicePort: 80

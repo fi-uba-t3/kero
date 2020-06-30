@@ -2,6 +2,28 @@
 
 This guide is aimed for KERO final users and provides information on how to access and use the different services provided.
 
+## First steps
+
+### Configuring your local dns
+
+Add the following lines to your `/etc/hosts` files
+
+```
+ip1 kero.kero-admin.io
+ip1 kero.ldap-admin.io
+ip1 kero.desk-spawner.io
+ip1 kero.vnc-<username>.io
+.
+.
+.
+ipn kero.kero-admin.io
+ipn kero.ldap-admin.io
+ipn kero.desk-spawner.io
+ipn kero.vnc-<username>.io
+```
+
+Where ip1...ipn are the IPs for the KERO cluster.
+
 ## Remote desktop service
 
 ### Create your desktop

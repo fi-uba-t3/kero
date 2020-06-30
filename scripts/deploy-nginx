@@ -1,0 +1,18 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/nginx/nginx-deployment.yaml | kubectl apply -f -
+
+NODE_COUNT="$(kubectl get nodes --no-headers | awk '{print $3}' | wc -l)"
+
+count="$(kubectl get pods --no-headers --namespace=ingress-nginx | grep ingress-nginx-controller  | awk '{print $3}' | grep Running | wc -l)"
+while [ "$count" -lt "$NODE_COUNT" ]; do
+  echo "Waiting for nginx: $count / $NODE_COUNT"
+  sleep 5
+  count="$(kubectl get pods --no-headers --namespace=ingress-nginx | grep ingress-nginx-controller | sed -e s/[\\n\\r]//g | awk '{print $3}' | grep -o Running | wc -l)"
+done
+
+kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+
+echo "nginx is now Running: $count / $NODE_COUNT"
