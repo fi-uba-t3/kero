@@ -83,7 +83,7 @@ node-1$ deploy-glfs 3 3
 
 To deploy nginx, invoke the command `deploy-nginx` from any machine on the KERO cluster.
 
-`deploy-glfs` does the following Kubernetes operations:
+`deploy-nginx` does the following Kubernetes operations:
 * Creates the namespace `ingress-nginx`
 * Create a DaemonSet, which instantiates a nginx controller on every node.
 * Creates and configures a nginx controller admission and the necessary roles for using it inside the cluster.
