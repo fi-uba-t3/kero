@@ -13,7 +13,9 @@ RUN chown -R www-data:www-data /var/www/kero.wiki.io
 RUN apt-get -y install unzip && mkdir -p /var/www/kero.ecommerce.io && \
 cd /var/www/kero.ecommerce.io && \
 wget https://getgrav.org/download/skeletons/shop-site/1.0.0 -O shop.zip && \
-unzip shop.zip && rm shop.zip && mv grav-*/* . && mv grav-*/.* . || true && rmdir grav-*/
+unzip shop.zip && rm shop.zip && mv grav-*/* . && mv grav-*/.* . || true && rmdir grav-*/ && \
+bin/gpm install email && bin/gpm install login && bin/gpm install admin
+ADD ecommerce/config/* /var/www/kero.ecommerce.io/user/config/
 RUN chown -R www-data:www-data /var/www/kero.ecommerce.io
 
 ADD *.conf /etc/nginx/conf.d/
