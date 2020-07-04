@@ -16,6 +16,7 @@ wget https://getgrav.org/download/skeletons/shop-site/1.0.0 -O shop.zip && \
 unzip shop.zip && rm shop.zip && mv grav-*/* . && mv grav-*/.* . || true && rmdir grav-*/ && \
 bin/gpm install email && bin/gpm install login && bin/gpm install admin
 ADD ecommerce/user/config/* /var/www/kero.ecommerce.io/user/config/
+ADD ecommerce/user/plugins/snipcart/* /var/www/kero.ecommerce.io/user/plugins/snipcart/
 ADD ecommerce/system/config/* /var/www/kero.ecommerce.io/system/config/
 RUN chown -R www-data:www-data /var/www/kero.ecommerce.io
 
