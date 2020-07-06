@@ -1,0 +1,59 @@
+{% include 'header.html' %}
+<!-- Main Content -->
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+      <h1 class="h3 mb-2 text-gray-800">Lista de servicios</h1>
+      <p class="mb-4">Esta tabla tiene la lista de los servicios en Kubernetes. </p>
+
+      <!-- DataTales Example -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Servicios</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Namespace</th>
+                  <th>Nombre</th>
+                  <th>Fecha creación</th>
+                  <th>IP cluster</th>
+                  <th>IP externa</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>Namespace</th>
+                  <th>Nombre</th>
+                  <th>Fecha creación</th>
+                  <th>IP cluster</th>
+                  <th>IP externa</th>
+                </tr>
+              </tfoot>
+              <tbody>
+                {% for service in services %}
+                <tr>
+                  <td>{{service["namespace"]}}</td>
+                  <td>{{service["name"]}}</td>
+                  <td>{{service["creation_timestamp"].strftime("%I:%M%p %d-%m-%Y")}}</td>
+                  <td>{{service["cluster_ip"]}}</td>
+                  <td>{{service["external_ip"]}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+  </div>
+  <!-- End of Main Content -->
+{% include 'footer.html' %}
