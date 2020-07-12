@@ -8,12 +8,9 @@ spec:
   selector:
     app: webserver
   ports:
-    - name: wiki
-      port: 8080
-      targetPort: 8080
-    - name: ecommerce
-      port: 8081
-      targetPort: 8081
+    - protocol: TCP
+      port: 80
+      targetPort: 80
   clusterIP: 10.96.80.80
 ---
 apiVersion: apps/v1
@@ -34,8 +31,7 @@ spec:
       - name: webserver
         image: kajachuan/kero-webserver
         ports:
-        - containerPort: 8080
-        - containerPort: 8081
+        - containerPort: 80
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -50,10 +46,10 @@ spec:
        paths:
        - backend:
           serviceName: webserver
-          servicePort: 8080
+          servicePort: 80
    - host: kero.ecommerce.io
      http:
        paths:
        - backend:
           serviceName: webserver
-          servicePort: 8081
+          servicePort: 80
