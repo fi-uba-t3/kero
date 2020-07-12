@@ -36,3 +36,24 @@ spec:
         ports:
         - containerPort: 8080
         - containerPort: 8081
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+ name: webserver-ingress
+ annotations:
+   nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+ rules:
+   - host: kero.wiki.io
+     http:
+       paths:
+       - backend:
+          serviceName: webserver
+          servicePort: 8080
+   - host: kero.ecommerce.io
+     http:
+       paths:
+       - backend:
+          serviceName: webserver
+          servicePort: 8081
