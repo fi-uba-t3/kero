@@ -25,7 +25,7 @@ spec:
           - name: gluster-home
             mountPath: "/home/users/${VNC_USERNAME}/"
           - name: gluster-group
-            mountPath: "/home/users/group"
+            mountPath: "/home/users/${VNC_GROUP}"
         env:
           - name: VNC_USER
             value: ${VNC_USERNAME}
