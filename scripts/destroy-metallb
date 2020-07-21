@@ -1,0 +1,7 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/metallb/metallb.yaml | kubectl delete -f -
+
+echo "MetalLB deleted"

@@ -25,4 +25,7 @@ spec:
     email: kcajachuan@fi.uba.ar
     privateKeySecretRef:
       name: letsencrypt-production
-    http01: {}
+    solvers:
+    - http01:
+        ingress:
+          class: nginx

@@ -1,0 +1,14 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/webserver/webserver.yaml | kubectl apply -f -
+
+WEBSERVER_STATUS=$(kubectl get pods | grep webserver | awk '{print $3}')
+while [ $WEBSERVER_STATUS != "Running" ]; do
+    echo "Waiting for webserver deployment (status: ${WEBSERVER_STATUS})"
+    sleep 5
+    WEBSERVER_STATUS=$(kubectl get pods | grep webserver | awk '{print $3}')
+done
+
+echo "Webserver is now Running"
