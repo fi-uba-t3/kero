@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kero-chat1-minio-kero-chat1-minio-0
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi

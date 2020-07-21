@@ -1,0 +1,20 @@
+apiVersion: mattermost.com/v1alpha1
+kind: ClusterInstallation
+metadata:
+  name: kero-chat1
+spec:
+  size: 100users
+  image: mattermost/mattermost-team-edition
+  ingressName: example.kero-chat.io
+  ingressAnnotations:
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+  version: 5.14.0
+  mattermostLicenseSecret: ""
+  database:
+    storageSize: 500Mi
+  minio:
+    storageSize: 500Mi
+  elasticSearch:
+    host: ""
+    username: ""
+    password: ""
