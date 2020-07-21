@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ldap
@@ -6,6 +6,9 @@ metadata:
     io.kompose.service: ldap-admin
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      application: ldap
   template:
     metadata:
       labels:
@@ -13,7 +16,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 5
       containers:
-      - name: ldap-admin 
+      - name: ldap-admin
         env:
         - name: PHPLDAPADMIN_HTTPS
           value: "false"
