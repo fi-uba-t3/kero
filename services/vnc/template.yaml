@@ -31,6 +31,8 @@ spec:
             value: ${VNC_USERNAME}
           - name: VNC_PW
             value: ${VNC_PW}
+          - name: VNC_GROUP
+            value: ${VNC_GROUP}
         livenessProbe:
           tcpSocket:
             port: 5901
