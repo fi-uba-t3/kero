@@ -41,16 +41,16 @@ metadata:
     kubernetes.io/tls-acme: "true"
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/add-base-url: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-staging" # Change to "letsencrypt-production"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging" # Change later to "letsencrypt-production"
 spec:
   rules:
-  - host: kerotest.ddns.net
+  - host: kerotest.hopto.org
     http:
       paths:
       - backend:
           serviceName: webserver
           servicePort: 80
-  - host: kero.ecommerce.io
+  - host: kerotestbis.ddns.net
     http:
       paths:
       - backend:
@@ -58,8 +58,8 @@ spec:
           servicePort: 80
   tls:
     - hosts:
-        - kerotest.ddns.net
+        - kerotest.hopto.org
       secretName: wiki.tls
     - hosts:
-        - kero.ecommerce.io
+        - kerotestbis.ddns.net
       secretName: ecommerce.tls
