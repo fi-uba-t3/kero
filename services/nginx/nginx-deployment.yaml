@@ -282,7 +282,9 @@ metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
-  type: LoadBalancer
+  type: NodePort
+  externalIPs:
+    - 190.16.160.149
   ports:
     - name: http
       port: 80
