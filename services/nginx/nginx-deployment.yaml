@@ -298,7 +298,7 @@ spec:
     app.kubernetes.io/component: controller
 ---
 # Source: ingress-nginx/templates/controller-deployment.yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
