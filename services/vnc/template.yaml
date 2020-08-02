@@ -17,7 +17,7 @@ spec:
       containers:
       - name: headless-vnc-${VNC_USERNAME}
         # image: consol/centos-xfce-vnc
-        image: juanfresia/taller3-test-vnc:test
+        image: juanfresia/taller3-test-vnc
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - name: gluster-shared
