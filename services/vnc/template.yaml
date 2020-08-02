@@ -17,7 +17,7 @@ spec:
       containers:
       - name: headless-vnc-${VNC_USERNAME}
         # image: consol/centos-xfce-vnc
-        image: juanfresia/taller3-test-vnc
+        image: juanfresia/taller3-test-vnc:test
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - name: gluster-shared
@@ -33,6 +33,8 @@ spec:
             value: ${VNC_PW}
           - name: VNC_GROUP
             value: ${VNC_GROUP}
+          - name: VNC_GROUPID
+            value: "${VNC_GROUPID}"
         livenessProbe:
           tcpSocket:
             port: 5901
