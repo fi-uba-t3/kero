@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
     node_disks = node['disks']
 
     config.vm.define name do |box|
-      box.vm.network "private_network", ip: node_ip
+      box.vm.network "public_network", ip: node_ip
       box.vm.hostname = name
 
       box.vm.provider "virtualbox" do |vb|
