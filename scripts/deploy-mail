@@ -2,23 +2,6 @@
 
 set +x
 
-export MAIL_IP="10.98.100.100"
-
-if [[ -z "$1" ]]; then
-    echo "INFO: No mail server IP provided, defaulting to ${MAIL_IP}"
-else
-    export MAIL_IP="$1"
-fi
-
-export LDAP_IP=""
-echo -n "Please enter the LDAP IP: "
-read -r LDAP_IP
-
-export DOMAIN_NAME=""
-echo -n "Please enter the LDAP domain name: "
-read -r DOMAIN_NAME
-echo
-
 envsubst < $KERO_HOME/services/mail/mail-deployment.yaml | kubectl apply -f -
 
 MAIL_STATUS=$(kubectl get pods | grep mailserver | awk '{print $3}')
@@ -29,8 +12,7 @@ while [ $MAIL_STATUS != "Running" ]; do
 done
 
 MAIL_PODNAME=$(kubectl get pods | grep mailserver | awk '{print $1}')
-kubectl exec $MAIL_PODNAME -c docker-mailserver mkdir /var/mail/$DOMAIN_NAME
-kubectl exec $MAIL_PODNAME -c docker-mailserver chmod a+rwxt /var/mail
-kubectl exec $MAIL_PODNAME -c docker-mailserver chmod a+rwxt /var/mail/$DOMAIN_NAME
+sudo kubectl exec $MAIL_PODNAME -c docker-mailserver -- mkdir /var/mail/fiuba.com/
+sudo kubectl exec $MAIL_PODNAME -c docker-mailserver -- chmod -R a+rwxt /var/mail/
 
-echo "Connect to webmail on ${MAIL_IP}"
+echo "Mailserver is now running"

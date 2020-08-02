@@ -13,7 +13,7 @@ data:
   ONE_DIR: "1"
   DMS_DEBUG: "0"
   ENABLE_LDAP: "1"
-  LDAP_SERVER_HOST: ${LDAP_IP}
+  LDAP_SERVER_HOST: 10.96.100.100
   LDAP_SEARCH_BASE: ou=People,dc=fiuba,dc=com
   LDAP_BIND_DN: cn=admin,dc=fiuba,dc=com
   LDAP_BIND_PW: admin
@@ -25,7 +25,7 @@ data:
   DOVECOT_USER_FILTER: (&(objectClass=PostfixBookMailAccount)(uid=%n))
   ENABLE_SASLAUTHD: "1"
   SASLAUTHD_MECHANISMS: ldap
-  SASLAUTHD_LDAP_SERVER: ${LDAP_IP}
+  SASLAUTHD_LDAP_SERVER: 10.96.100.100
   SASLAUTHD_LDAP_BIND_DN: cn=admin,dc=fiuba,dc=com
   SASLAUTHD_LDAP_PASSWORD: admin
   SASLAUTHD_LDAP_SEARCH_BASE: ou=People,dc=fiuba,dc=com
@@ -43,9 +43,9 @@ spec:
   selector:
     app: mailserver
   ports:
-    - name: client-tcp
+    - name: client
       port: 80
-      targetPort: tcp
+      targetPort: http
     - name: smtp
       port: 25
       targetPort: smtp
@@ -61,7 +61,7 @@ spec:
     - name: imap-secure
       port: 993
       targetPort: imap-secure
-  clusterIP: ${MAIL_IP}
+  clusterIP: 10.98.100.100
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -83,7 +83,7 @@ spec:
       - name: rainloop
         image: solidnerd/rainloop
         ports:
-          - name: tcp
+          - name: http
             containerPort: 80
             protocol: TCP
       - name: docker-mailserver
