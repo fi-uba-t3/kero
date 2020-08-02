@@ -27,11 +27,17 @@ spec:
             mountPath: "/mnt/shared"
           - name: gluster-home
             mountPath: "/home/users/${VNC_USERNAME}/"
+          - name: gluster-group
+            mountPath: "/home/users/${VNC_GROUP}"
         env:
           - name: VNC_USER
             value: ${VNC_USERNAME}
           - name: VNC_PW
             value: ${VNC_PW}
+          - name: VNC_GROUP
+            value: ${VNC_GROUP}
+          - name: VNC_GROUPID
+            value: "${VNC_GROUPID}"
         livenessProbe:
           tcpSocket:
             port: 5901
@@ -49,6 +55,9 @@ spec:
       - name: gluster-shared
         persistentVolumeClaim:
           claimName: shared-claim
+      - name: gluster-group
+        persistentVolumeClaim:
+          claimName: group-claim-${VNC_GROUP}
       - name: gluster-home
         persistentVolumeClaim:
           claimName: home-claim-${VNC_USERNAME}
