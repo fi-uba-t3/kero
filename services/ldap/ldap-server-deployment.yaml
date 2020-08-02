@@ -100,3 +100,18 @@ spec:
   resources:
     requests:
       storage: 100Mi
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ldap-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+  rules:
+  - host: kero.ldap-admin.io
+    http:
+      paths:
+      - backend:
+          serviceName: ldap-svc
+          servicePort: 80
