@@ -11,4 +11,14 @@ while [ $WEBSERVER_STATUS != "Running" ]; do
     WEBSERVER_STATUS=$(kubectl get pods | grep webserver | awk '{print $3}')
 done
 
+PODNAME=$(kubectl get pods | grep webserver | awk '{print $1}')
+
+echo "Copying files to wiki"
+(sudo kubectl exec -i $PODNAME -- /bin/bash) <<< 'cp -r /var/www/kero.wiki.io/* /var/www/kerotest.hopto.org/'
+sudo kubectl exec $PODNAME -- chown -R www-data:www-data /var/www/kerotest.hopto.org/
+
+echo "Copying files to ecommerce"
+(sudo kubectl exec -i $PODNAME -- /bin/bash) <<< 'cp -r /var/www/kero.ecommerce.io/* /var/www/kerotestbis.ddns.net/'
+sudo kubectl exec $PODNAME -- chown -R www-data:www-data /var/www/kerotestbis.ddns.net/
+
 echo "Webserver is now Running"
