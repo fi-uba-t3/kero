@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix-synapse
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: matrix-synapse
+  template:
+    metadata:
+      labels:
+        application: matrix-synapse
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      containers:
+      - name: matrix-synapse
+        image: matrixdotorg/synapse:v1.17.0-py3
+        command: ["/bin/sh", "-c"]
+        #args: ["-c", "'chown -R 991:991 /data /config; find / -iname \"start.py\"'"]
+        args: ["chown -R 991:991 /data /config; cp -R /config/* /data; python /start.py"]
+        ports:
+        - containerPort: 8008
+        env:
+        - name: SYNAPSE_SERVER_NAME
+          value: kero_synapse
+        - name: SYNAPSE_REPORT_STATS
+          value: "yes"
+        - name: SYNAPSE_CONFIG_DIR
+          value: "/config"
+        - name: UID
+          value: "0"
+        - name: GID
+          value: "0"
+        volumeMounts:
+          - mountPath: /config
+            name: config
+          - mountPath: /data
+            name: matrix-synapse-data
+        resources:
+          limits:
+            ephemeral-storage: 150Mi
+          requests:
+            ephemeral-storage: 100Mi
+      volumes:
+      - name: config
+        hostPath:
+          path: /vagrant/services/matrix/synapse-data
+          type: Directory
+      - name: matrix-synapse-data
+        persistentVolumeClaim:
+          claimName: matrix-synapse-data-claim
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: matrix-synapse-data-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+    volume.beta.kubernetes.io/gid: "991"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: matrix-synapse
+  name: matrix-synapse-svc
+  namespace: default
+spec:
+  externalName: matrix-synapse-svc
+  type: NodePort
+  ports:
+  - name: matrix-synapse-tcp
+    protocol: TCP
+    port: 8008
+    targetPort: 8008
+  selector:
+    application: matrix-synapse
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+  name: matrix-synapse-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+  rules:
+  - host: kero.matrix-synapse.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: matrix-synapse-svc
+          servicePort: 8008
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: glusterfs-simple-1000
+provisioner: gluster.org/glusterfs-simple
+reclaimPolicy: Retain
+parameters:
+  user: "" #TODO
+  forceCreate: "true"
+  volumeType: "replica 3"
+  brickrootPaths: "10.0.0.2:/etc/kubernetes/bricks/brick0,10.0.0.3:/etc/kubernetes/bricks/brick0,10.0.0.4:/etc/kubernetes/bricks/brick0,10.0.0.5:/etc/kubernetes/bricks/brick0,10.0.0.2:/etc/kubernetes/bricks/brick1,10.0.0.3:/etc/kubernetes/bricks/brick1,10.0.0.4:/etc/kubernetes/bricks/brick1,10.0.0.5:/etc/kubernetes/bricks/brick1,10.0.0.2:/etc/kubernetes/bricks/brick2,10.0.0.3:/etc/kubernetes/bricks/brick2,10.0.0.4:/etc/kubernetes/bricks/brick2,10.0.0.5:/etc/kubernetes/bricks/brick2"
+
