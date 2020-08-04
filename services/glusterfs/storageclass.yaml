@@ -9,3 +9,4 @@ parameters:
   forceCreate: "true"
   volumeType: "replica 3"
   brickrootPaths: "192.168.0.102:/etc/kubernetes/bricks/brick0,192.168.0.103:/etc/kubernetes/bricks/brick0,192.168.0.104:/etc/kubernetes/bricks/brick0,192.168.0.105:/etc/kubernetes/bricks/brick0,192.168.0.102:/etc/kubernetes/bricks/brick1,192.168.0.103:/etc/kubernetes/bricks/brick1,192.168.0.104:/etc/kubernetes/bricks/brick1,192.168.0.105:/etc/kubernetes/bricks/brick1,192.168.0.102:/etc/kubernetes/bricks/brick2,192.168.0.103:/etc/kubernetes/bricks/brick2,192.168.0.104:/etc/kubernetes/bricks/brick2,192.168.0.105:/etc/kubernetes/bricks/brick2"
+
