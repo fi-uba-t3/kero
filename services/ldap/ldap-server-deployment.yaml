@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ldap
@@ -6,6 +6,9 @@ metadata:
     io.kompose.service: ldap-admin
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      application: ldap
   template:
     metadata:
       labels:
@@ -58,6 +61,7 @@ metadata:
   name: ldap-svc
 spec:
   externalName: ldap-svc
+  type: NodePort
   ports:
   - name: admin-panel-tcp
     protocol: TCP

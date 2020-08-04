@@ -1,0 +1,50 @@
+{% include 'header.html' %}
+<!-- Main Content -->
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+      <h1 class="h3 mb-2 text-gray-800">Lista de grupos</h1>
+      <p class="mb-4">A continuación se encuentra el listado de grupos (PosixGroups) en LDAP. Podés crear un nuevo grupo haciendo clic <a href="/new_group">acá</a>.</p>
+
+      <!-- DataTales Example -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Grupos</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Grupo</th>
+                  <th>Número</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>Grupo</th>
+                  <th>Número</th>
+                </tr>
+              </tfoot>
+              <tbody>
+                {% for group in groups %}
+                <tr>
+                  <td>{{group["group_name"][0]}}</td>
+                  <td>{{group["group_number"][0]}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+  </div>
+  <!-- End of Main Content -->
+{% include 'footer.html' %}

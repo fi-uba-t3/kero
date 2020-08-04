@@ -79,6 +79,16 @@ node-1$ deploy-glfs 3 3
 * Bind the necessary ServiceAccount / ClusterRole
 * Create a GlusterFS simple provisioner
 
+## Deploying nginx
+
+To deploy nginx, invoke the command `deploy-nginx` from any machine on the KERO cluster.
+
+`deploy-nginx` does the following Kubernetes operations:
+
+* Creates the namespace `ingress-nginx`
+* Create a DaemonSet, which instantiates a nginx controller on every node.
+* Creates and configures a nginx controller admission and the necessary roles for using it inside the cluster.
+
 ## Configuring LDAP and user credentials
 
 With your shared storage already setted, you can now deploy the users administration service based on OpenLDAP. In order to do that, simply run the `deploy-ldap` command on any KERO machine providing the domain name for your organization (for instance, `fiuba.com`).
