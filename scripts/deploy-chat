@@ -1,0 +1,12 @@
+#!/bin/bash
+kubectl apply -f $KERO_HOME/services/matrix/matrix-deployment.yaml
+kubectl apply -f $KERO_HOME/services/matrix/riot-deployment.yaml
+
+CHAT_STATUS=$(kubectl get pods | grep matrix | awk '{print $3}')
+while [ $CHAT_STATUS != "Running" ]; do
+    echo "Waiting for matrix deployment (status: ${CHAT_STATUS})"
+    sleep 6
+    CHAT_STATUS=$(kubectl get pods | grep matrix | awk '{print $3}')
+done
+
+echo "Deployed!"

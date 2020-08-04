@@ -19,7 +19,6 @@ spec:
       - name: matrix-synapse
         image: matrixdotorg/synapse:v1.17.0-py3
         command: ["/bin/sh", "-c"]
-        #args: ["-c", "'chown -R 991:991 /data /config; find / -iname \"start.py\"'"]
         args: ["chown -R 991:991 /data /config; cp -R /config/* /data; python /start.py"]
         ports:
         - containerPort: 8008
@@ -100,16 +99,3 @@ spec:
         backend:
           serviceName: matrix-synapse-svc
           servicePort: 8008
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: glusterfs-simple-1000
-provisioner: gluster.org/glusterfs-simple
-reclaimPolicy: Retain
-parameters:
-  user: "" #TODO
-  forceCreate: "true"
-  volumeType: "replica 3"
-  brickrootPaths: "10.0.0.2:/etc/kubernetes/bricks/brick0,10.0.0.3:/etc/kubernetes/bricks/brick0,10.0.0.4:/etc/kubernetes/bricks/brick0,10.0.0.5:/etc/kubernetes/bricks/brick0,10.0.0.2:/etc/kubernetes/bricks/brick1,10.0.0.3:/etc/kubernetes/bricks/brick1,10.0.0.4:/etc/kubernetes/bricks/brick1,10.0.0.5:/etc/kubernetes/bricks/brick1,10.0.0.2:/etc/kubernetes/bricks/brick2,10.0.0.3:/etc/kubernetes/bricks/brick2,10.0.0.4:/etc/kubernetes/bricks/brick2,10.0.0.5:/etc/kubernetes/bricks/brick2"
-
