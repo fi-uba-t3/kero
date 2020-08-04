@@ -2,7 +2,8 @@
 
 set +x
 
-envsubst < $KERO_HOME/services/cert-manager/cert-manager-legacy.yaml | kubectl apply --validate=false -f -
+# envsubst < $KERO_HOME/services/cert-manager/cert-manager-legacy.yaml | kubectl apply --validate=false -f -
+envsubst < $KERO_HOME/services/cert-manager/cert-manager.yaml | kubectl apply --validate=false -f -
 
 POD_COUNT=3
 
