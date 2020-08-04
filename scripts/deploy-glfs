@@ -23,7 +23,7 @@ NODE_COUNT=$(echo $STORAGE_NODES | wc -w)
 
 # DEBUG ONLY: Set this to "echo" to neuter the script and perform a dry-run
 DEBUG=""
- 
+
 # The host directory to store brick files
 BRICK_HOSTDIR="/etc/kubernetes/bricks"
 
@@ -34,15 +34,15 @@ if [ "$NODE_COUNT" -lt 2 ]; then
 fi
 
 sudo untaint-nodes
- 
+
 # Label storage nodes appropriately
 for node in $STORAGE_NODES; do
   $DEBUG kubectl label nodes $node storagenode=glusterfs --overwrite
 done
- 
+
 # Create the GLFS cluster
 $DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/glusterfs-daemonset.yaml
- 
+
 # Wait for the GLFS cluster to come up
 count="$(kubectl get pods --no-headers | grep glusterfs | grep -v provisioner | awk '{print $3}' | grep Running | wc -l)"
 while [ "$count" -lt "$NODE_COUNT" ]; do
@@ -51,10 +51,10 @@ while [ "$count" -lt "$NODE_COUNT" ]; do
   count="$(kubectl get pods --no-headers | grep glusterfs | grep -v provisioner | sed -e s/[\\n\\r]//g | awk '{print $3}' | grep -o Running | wc -l)"
 done
 echo "GlusterFS is now Running: $count / $NODE_COUNT"
- 
+
 # Retrieve GlusterFS pod IPs
 PEER_IPS=$(kubectl get pods -o wide | grep glusterfs | grep -v provisioner | awk '{print $6}' | sort)
- 
+
 # Use pod names / IPs to exec in and perform `gluster peer probe`
 for pod_ip in ${PEER_IPS}; do
   for peer_ip in ${PEER_IPS}; do
@@ -65,10 +65,10 @@ for pod_ip in ${PEER_IPS}; do
 
     # Perform a gluster peer probe
     pod_name=$(kubectl get pods -o wide | grep $pod_ip | awk '{print $1}')
-    $DEBUG kubectl exec -it $pod_name gluster peer probe $peer_ip
+    $DEBUG kubectl exec $pod_name -- gluster peer probe $peer_ip
   done;
 done;
- 
+
 # Dynamically build StorageClass from pod IPs (see below)
 BRICK_PATHS=""
 
@@ -84,7 +84,7 @@ for i in $(seq 0 $(($BRICKS_PER_NODE - 1))); do
       BRICK_PATHS="${BRICK_PATHS}${pod_ip}:${NEW_BRICK}"
     done
 done
- 
+
 # Modify StorageClass to contain our GlusterFS brickrootPaths
 echo "---
 kind: StorageClass
@@ -98,13 +98,13 @@ parameters:
   volumeType: \"replica $REPLICAS\"
   brickrootPaths: \"$BRICK_PATHS\"
 " > $KERO_HOME/services/glusterfs/storageclass.yaml
- 
+
 # Create the storage class
 $DEBUG kubectl delete -f $KERO_HOME/services/glusterfs/storageclass.yaml
 $DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/storageclass.yaml
- 
+
 # Bind the necessary ServiceAccount / ClusterRole
 $DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/rbac.yaml
- 
+
 # Create the GLFS Simple Provisioner
 $DEBUG kubectl apply -f $KERO_HOME/services/glusterfs/deployment.yaml

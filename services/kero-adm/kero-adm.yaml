@@ -75,7 +75,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
       - name: kero-adm
-        image: joaquintz/kero_adm:0.05
+        image: joaquintz/kero_adm:0.09
         ports:
         - containerPort: 5000
         env:
@@ -90,9 +90,9 @@ spec:
             name: config
         resources:
           limits:
-            ephemeral-storage: 15Mi
+            ephemeral-storage: 150Mi
           requests:
-            ephemeral-storage: 10Mi
+            ephemeral-storage: 100Mi
       serviceAccountName: kero-admin-user
       volumes:
       - name: config
@@ -109,6 +109,7 @@ metadata:
   namespace: default
 spec:
   externalName: kero-adm-svc
+  type: NodePort
   ports:
   - name: kero-adm-tcp
     protocol: TCP
@@ -116,3 +117,19 @@ spec:
     targetPort: 5000
   selector:
     application: kero-adm
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+ name: kero-adm-ingress
+ annotations:
+   nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+ rules:
+ - host: kero.kero-admin.io
+   http:
+     paths:
+     - path: /
+       backend:
+         serviceName: kero-adm-svc
+         servicePort: 80

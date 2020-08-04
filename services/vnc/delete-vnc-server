@@ -28,6 +28,6 @@ if [[ -z "$VNC_USERID" ]]; then
     exit 1
 fi
 
-envsubst < $KERO_HOME/vnc/template.yaml | kubectl delete -f -
+envsubst < $KERO_HOME/services/vnc/template.yaml | kubectl delete -f -
 
 echo "Deleted"

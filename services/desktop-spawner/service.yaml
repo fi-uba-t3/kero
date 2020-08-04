@@ -47,6 +47,7 @@ metadata:
   name: desk-spawner-svc
 spec:
   externalName: desk-spawner-svc
+  type: NodePort
   ports:
   - name: admin-panel-tcp
     protocol: TCP
@@ -54,3 +55,19 @@ spec:
     targetPort: 5000
   selector:
     application: desk-spawner
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+ name: desk-spawner-ingress
+ annotations:
+   nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+ rules:
+ - host: kero.desk-spawner.io
+   http:
+     paths:
+     - path: /
+       backend:
+         serviceName: desk-spawner-svc
+         servicePort: 80
