@@ -35,6 +35,11 @@ data:
   # SSL_TYPE: manual
   # SSL_CERT_PATH: /etc/ssl/mailserver/tls.crt
   # SSL_KEY_PATH: /etc/ssl/mailserver/tls.key
+  # DEFAULT_RELAY_HOST: "[smtp.sendgrid.net]:25"
+  # RELAY_HOST: smtp.sendgrid.net
+  # RELAY_PORT: "25"
+  # RELAY_USER: apikey
+  # RELAY_PASSWORD: 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
 ---
 apiVersion: v1
 kind: Service
