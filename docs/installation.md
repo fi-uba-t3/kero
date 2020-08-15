@@ -163,6 +163,10 @@ Once on the dashboard, you can monitor all pods, services and deployments on the
 
 ![](./img/dashboard.png)
 
+## Administering the Kero system
+
+It is possible to do some operations, like creating and deleting groups and users, and visualize the state of the pods and services of the Kero system by the Kero Admin dashboard. To use it, you can deploy it using the `deploy-kero-adm` command.
+
 ## Remote desktop service
 
 To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the desktop spawner API from a Kero cluster machine just invoke the command `deploy-desktop-spawner`.
@@ -171,3 +175,12 @@ To enable the remote desktop service, you will need a service that deploys vnc d
 * Creates a Deployment, which instantiates a Desktop spawner API server on a node.
 * Waits for the desktop spawner API server to be running and ready.
 * Return the new desktop spawner service IP.
+
+## Accesing the services
+
+After nginx is deployed, each service will have an URL assigned:
+
+- [kero.kero-admin.io](kero.kero-admin.io) - Kero Admin
+- [kero.ldap-admin.io](kero.ldap-admin.io) - Ldap Admin
+- [kero.desk-spawner.io](kero.desk-spawner.io) - Kero Desktop Spawner
+- [kero.vnc-<username>.io](kero.vnc-<username>.io) - Remote Desktop for user with username `username`
