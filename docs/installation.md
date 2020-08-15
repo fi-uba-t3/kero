@@ -165,7 +165,15 @@ Once on the dashboard, you can monitor all pods, services and deployments on the
 
 ## Administering the Kero system
 
-It is possible to do some operations, like creating and deleting groups and users, and visualize the state of the pods and services of the Kero system by the Kero Admin dashboard. To use it, you can deploy it using the `deploy-kero-adm` command.
+It is possible to do some operations, like creating and deleting groups and users or visualizing the state of the pods and services of the Kero system by the Kero Admin dashboard. To use it, you can deploy it using the `deploy-kero-adm` command.
+
+To access the Kero Admin, you will land on the following login screen:
+
+![](./img/kero_login.png)
+
+The login information will be the LDAP admin account created when configuring that service.
+
+![](./img/login_success.png)
 
 ## Remote desktop service
 
