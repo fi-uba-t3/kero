@@ -1,0 +1,4 @@
+#!/bin/bash
+
+kubectl delete -f $KERO_HOME/services/matrix/riot-deployment.yaml
+kubectl delete -f $KERO_HOME/services/matrix/matrix-deployment.yaml
