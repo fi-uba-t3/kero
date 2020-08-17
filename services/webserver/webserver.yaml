@@ -76,13 +76,13 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-staging" # Change later to "letsencrypt-production"
 spec:
   rules:
-  - host: kerotest.hopto.org
+  - host: wiki.kero.fi.uba.ar
     http:
       paths:
       - backend:
           serviceName: webserver
           servicePort: 80
-  - host: kerotestbis.ddns.net
+  - host: ecommerce.kero.fi.uba.ar #kerotestbis.ddns.net
     http:
       paths:
       - backend:
@@ -90,8 +90,8 @@ spec:
           servicePort: 80
   tls:
     - hosts:
-        - kerotest.hopto.org
+        - wiki.kero.fi.uba.ar
       secretName: wiki.tls
     - hosts:
-        - kerotestbis.ddns.net
+        - ecommerce.kero.fi.uba.ar
       secretName: ecommerce.tls
