@@ -34,15 +34,21 @@ spec:
         - containerPort: 80
         volumeMounts:
           - name: data
-            mountPath: /var/www/kerotest.hopto.org
+            mountPath: /var/www/wiki
             subPath: wiki
           - name: data
-            mountPath: /var/www/kerotestbis.ddns.net
+            mountPath: /var/www/ecommerce
             subPath: ecommerce
+          - name: conf
+            mountPath: /etc/nginx/conf.d
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: webserver-storage
+        - name: conf
+          hostPath:
+            path: $KERO_HOME/services/webserver/conf
+            type: Directory
       restartPolicy: Always
 ---
 apiVersion: v1
