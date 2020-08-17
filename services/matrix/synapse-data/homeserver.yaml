@@ -1999,7 +1999,7 @@ password_providers:
     - module: "ldap_auth_provider.LdapAuthProvider"
       config:
         enabled: true
-        uri: "ldap://kero.ldap-admin.io:389"
+        uri: "ldap://10.96.100.100:389"
         start_tls: false
         base: "ou=People,dc=fiuba,dc=com"
         attributes:
