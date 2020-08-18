@@ -3,7 +3,7 @@
 set -x
 
 ## Download and instal etcdctl
-ETCD_VER=v3.3.13
+ETCD_VER=v3.4.10
 DOWNLOAD_URL=https://github.com/etcd-io/etcd/releases/download
 
 ## Remove previous downloads
@@ -23,7 +23,7 @@ cat >/etc/profile.d/etcdctl.sh <<"EOF"
 
 export ETCDCTL_CERT=/etc/kubernetes/pki/etcd/ca.crt
 export ETCDCTL_KEY=/etc/kubernetes/pki/etcd/ca.key
-export ETCDCTL_ENDPOINTS=https://10.0.0.2:2379,https://10.0.0.3:2379
+export ETCDCTL_ENDPOINTS=https://192.168.0.102:2379,https://192.168.0.103:2379
 export ETCDCTL_API=3
 
 alias etcdctl="etcdctl --insecure-skip-tls-verify"

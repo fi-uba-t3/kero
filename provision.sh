@@ -17,7 +17,7 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
 
     # If it is not the first master, we join the already existing cluster
     if [ -f $KERO_HOME/cache/join-master.sh ]; then
-        echo "$(cat ${KERO_HOME}/cache/join-master.sh) --experimental-control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
+        echo "$(cat ${KERO_HOME}/cache/join-master.sh) --control-plane --apiserver-advertise-address=${NODE_IP}" | sudo bash -s
     else
         # Otherwise, we create a new cluster.
         mkdir -p $KERO_HOME/cache
@@ -29,14 +29,14 @@ if [[ "${NODE_ROLE}" == "master" ]]; then
         # service. TODO: replace this with a LB
         # It is replaced in the template from NODE_IP env var.
         envsubst < $KERO_HOME/kubeadm-config.yaml > /tmp/kubeadm-config.yaml
-        sudo kubeadm init --config=/tmp/kubeadm-config.yaml \
-            --experimental-upload-certs | tee $KERO_HOME/cache/kubeadm-init.log
+        kubeadm config migrate --old-config /tmp/kubeadm-config.yaml --new-config /tmp/kubeadm-config18.yaml
+        sudo kubeadm init --config=/tmp/kubeadm-config18.yaml --upload-certs | tee $KERO_HOME/cache/kubeadm-init.log
 
         # Install network plugin
         sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f $KERO_HOME/services/kuberouter/kubeadm-kuberouter.yaml
 
         # Leave instructions to other masters and nodes on how to join the cluster.
-        cat $KERO_HOME/cache/kubeadm-init.log | grep "experimental-control" -B2 > $KERO_HOME/cache/join-master.sh
+        cat $KERO_HOME/cache/kubeadm-init.log | grep "control" -B2 > $KERO_HOME/cache/join-master.sh
         tail -2 $KERO_HOME/cache/kubeadm-init.log > $KERO_HOME/cache/join.sh
 
     fi

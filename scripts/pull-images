@@ -12,8 +12,8 @@ sudo docker pull gluster/gluster-centos:gluster-centos:gluster4u1_centos7
 sudo docker pull quay.io/external_storage/glusterfs-simple-provisioner:latest
 
 # LDAP images (users CRUD service)
-sudo docker pull osixia/phpldapadmin
-sudo docker pull osixia/openldap
+sudo docker pull osixia/phpldapadmin:0.8.0
+sudo docker pull osixia/openldap:1.2.4
 
 # Desktop spawner image (foreign access service)
 sudo docker pull juanfresia/desk-spawner:0.0.5
