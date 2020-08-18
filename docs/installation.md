@@ -147,6 +147,22 @@ A success message should appear and the user should be deleted.
 
 ![](./img/ldap_delete_success.png)
 
+## Deploying the Kero services
+
+With LDAP and the storage in place, it is possible to deploy the other services that Kero provides.
+
+### Chat
+
+To use the chat service, it is necessary to deploy the Matrix-synapse server and the Element client. To do so, use the command `deploy-chat` that will start both services.
+To ensure that Matrix is running, access it by a web browser, you should see the following screen:
+
+![](./img/matrix_running.png)
+
+### E-commerce
+
+### Mail
+
+
 ## Monitoring your cluster
 
 An additional monitoring service is provided via the Kubernetes Web UI Dashboard. In order to set up this dashboard, simply run the `deploy-dashboard` command. 
@@ -163,11 +179,11 @@ Once on the dashboard, you can monitor all pods, services and deployments on the
 
 ![](./img/dashboard.png)
 
-## Administering the Kero system
+## Administering the KERO system
 
-It is possible to do some operations, like creating groups and users or visualizing the state of the pods and services of the Kero system by the Kero Admin dashboard. To use it, you can deploy it using the `deploy-kero-adm` command.
+It is possible to do some operations, like creating groups and users or visualizing the state of the pods and services of the KERO system by the KERO Admin dashboard. To use it, you can deploy it using the `deploy-kero-adm` command.
 
-To access the Kero Admin, you will land on the following login screen:
+To access the KERO Admin, you will land on the following login screen:
 
 ![](./img/kero_login.png)
 
@@ -183,7 +199,7 @@ As well as groups.
 
 ![](./img/kero_groups.png)
 
-To get information on the status of the pods running on the Kero system simply click _Estado de los pods_:
+To get information on the status of the pods running on the KERO system simply click _Estado de los pods_:
 
 ![](./img/kero_pods_status.png)
 
@@ -193,7 +209,7 @@ And for the services _Estado de los servicios_:
 
 ## Remote desktop service
 
-To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the desktop spawner API from a Kero cluster machine just invoke the command `deploy-desktop-spawner`.
+To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the desktop spawner API from a KERO cluster machine just invoke the command `deploy-desktop-spawner`.
 
 `deploy-desktop-spawner` does the following Kubernetes operations:
 * Creates a Deployment, which instantiates a Desktop spawner API server on a node.
@@ -204,7 +220,9 @@ To enable the remote desktop service, you will need a service that deploys vnc d
 
 After nginx is deployed, each service will have an URL assigned:
 
-- [kero.kero-admin.io](kero.kero-admin.io) - Kero Admin
+- [kero.kero-admin.io](kero.kero-admin.io) - KERO Admin
 - [kero.ldap-admin.io](kero.ldap-admin.io) - Ldap Admin
-- [kero.desk-spawner.io](kero.desk-spawner.io) - Kero Desktop Spawner
+- [kero.desk-spawner.io](kero.desk-spawner.io) - KERO Desktop Spawner
+- [kero.matrix-synapse.io](kero.matrix-synapse.io) - Matrix-synapse chat server
+- [kero.chat.io](http://kero.chat.io/) - Element chat client
 - [kero.vnc-<username>.io](kero.vnc-<username>.io) - Remote Desktop for user with username `username`

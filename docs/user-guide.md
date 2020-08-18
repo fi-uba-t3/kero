@@ -12,6 +12,8 @@ Add the following lines to your `/etc/hosts` files
 ip1 kero.kero-admin.io
 ip1 kero.ldap-admin.io
 ip1 kero.desk-spawner.io
+ip1 kero.matrix-synapse.io
+ip1 kero.chat.io
 ip1 kero.vnc-<username>.io
 .
 .
@@ -19,6 +21,8 @@ ip1 kero.vnc-<username>.io
 ipn kero.kero-admin.io
 ipn kero.ldap-admin.io
 ipn kero.desk-spawner.io
+ipn kero.matrix-synapse.io
+ipn kero.chat.io
 ipn kero.vnc-<username>.io
 ```
 
@@ -82,3 +86,19 @@ or use the script `vnc-connect` providing the desktop spawner URL and your crede
 2. Navigate to the URL kero.vnc-`<your-VNC-username>`.io to log in and use your desktop.
 
 3. When you are finished, do a DELETE against the desktop spawner (also with your credentials) to shutdown your desktop. You can also opt to use the script `vnc-disconnect` providing the desktop spawner URL and your credentials.
+
+## Chat service
+
+To use the chat service, navigate to the URL of the chat client.
+
+![](./img/chat_welcome.png)
+
+Then click on _Sign In_.
+
+![](./img/chat_login.png)
+
+Change the Matrix server to the KERO one.
+
+![](./img/chat_login_2.png)
+
+And lastly ingress with the username provided by your KERO cluster administrator.
