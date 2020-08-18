@@ -122,7 +122,7 @@ class LDAPManager:
             max_user_id = max([int(user["userid"][0]) for user in existing_users])
 
         modlist = {
-            "objectClass": [b"inetOrgPerson", b"posixAccount", b"top"],
+            "objectClass": [b"inetOrgPerson", b"posixAccount", b"PostfixBookMailAccount", b"top"],
             "uid": [s2b(username)],
             "sn": [s2b(last_name)],
             "givenName": [s2b(first_name)],
@@ -133,6 +133,12 @@ class LDAPManager:
             "gidNumber": [s2b(str(group_number))],
             "loginShell": [s2b("/bin/bash")],
             "homeDirectory": [s2b(f"/home/{username}")],
+            "mailuidnumber": [s2b(str(max_user_id+1))],
+            "mailgidnumber": [s2b(str(group_number))],
+            "mailenabled": [s2b("TRUE")],
+            "mail": [s2b(f"{username}@{self.dn}")],
+            "mailhomedirectory": [s2b(f"/var/mail/{self.dn}/{username}")],
+            "mailstoragedirectory": [s2b(f"maildir:/var/mail/{self.dn}/{username}")],
             "memberOf": []
         }
         try:
