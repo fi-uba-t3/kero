@@ -3,6 +3,7 @@
  * Dokuwiki's Main Configuration File - Local Settings
  */
 $conf['title'] = 'KeroWiki';
+$conf['basedir'] = '/wiki/';
 $conf['license'] = 'cc-by-sa';
 $conf['useacl'] = 1;
 $conf['authtype'] = 'authldap';

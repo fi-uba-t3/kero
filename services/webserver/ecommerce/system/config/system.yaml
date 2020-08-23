@@ -6,7 +6,7 @@ wrapped_site: false                              # For themes/plugins to know if
 reverse_proxy_setup: false                       # Running in a reverse proxy scenario with different webserver ports than proxy
 force_ssl: false                                 # If enabled, Grav forces to be accessed via HTTPS (NOTE: Not an ideal solution)
 force_lowercase_urls: true                       # If you want to support mixed cased URLs set this to false
-custom_base_url: ''                              # Set the base_url manually, e.g. http://yoursite.com/yourpath
+custom_base_url: '/ecommerce'                    # Set the base_url manually, e.g. http://yoursite.com/yourpath
 username_regex: '^[a-z0-9_-]{3,16}$'             # Only lowercase chars, digits, dashes, underscores. 3 - 16 chars
 pwd_regex: '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}' # At least one number, one uppercase and lowercase letter, and be at least 8+ chars
 intl_enabled: true                               # Special logic for PHP International Extension (mod_intl)
@@ -162,7 +162,7 @@ session:
   secure: false                                  # Set session secure. If true, indicates that communication for this cookie must be over an encrypted transmission. Enable this only on sites that run exclusively on HTTPS
   httponly: true                                 # Set session HTTP only. If true, indicates that cookies should be used only over HTTP, and JavaScript modification is not allowed.
   split: true                                    # Sessions should be independent between site and plugins (such as admin)
-  path:
+  path: /ecommerce
 
 gpm:
   releases: stable                               # Set to either 'stable' or 'testing'
