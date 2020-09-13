@@ -9,24 +9,18 @@ This guide is aimed for KERO final users and provides information on how to acce
 Add the following lines to your `/etc/hosts` files
 
 ```
-ip1 kero.kero-admin.io
-ip1 kero.ldap-admin.io
-ip1 kero.desk-spawner.io
-ip1 kero.matrix-synapse.io
-ip1 kero.chat.io
-ip1 kero.vnc-<username>.io
-.
-.
-.
-ipn kero.kero-admin.io
-ipn kero.ldap-admin.io
-ipn kero.desk-spawner.io
-ipn kero.matrix-synapse.io
-ipn kero.chat.io
-ipn kero.vnc-<username>.io
+external-ip kero.kero-admin.io
+external-ip kero.ldap-admin.io
+external-ip kero.desk-spawner.io
+external-ip kero.matrix-synapse.io
+external-ip kero.chat.io
+external-ip kero.vnc-<username>.io
+external-ip kero.mail.io
+external-ip kero.wiki.io
+external-ip kero.ecommerce.io
 ```
 
-Where ip1...ipn are the IPs for the KERO cluster.
+Where external-ip is the external IP for the KERO cluster load balancer.
 
 ## Remote desktop service
 
