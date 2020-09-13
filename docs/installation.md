@@ -79,15 +79,27 @@ node-1$ deploy-glfs 3 3
 * Bind the necessary ServiceAccount / ClusterRole
 * Create a GlusterFS simple provisioner
 
-## Deploying nginx
+## Deploying MetalLB
 
-To deploy nginx, invoke the command `deploy-nginx` from any machine on the KERO cluster.
+To deploy MetalLB, invoke the command `deploy-metallb` from any machine on the KERO cluster.
+
+`deploy-metallb` does the following Kubernetes operations:
+
+* Create the namespace `metallb-system`
+* Create a Deployment `controller`, which handles IP address assignments.
+* Create a DaemonSet `speaker`, which speakes the protocol(s) to make the services reachable.
+* Bind the service accounts for the controller and speaker, along with the RBAC permissions that the components need to function.
+
+## Deploying Nginx
+
+With MetalLB already setted, you can now deploy the Nginx Load Balancer. In order to do that, run the command `deploy-nginx` from any machine on the KERO cluster.
 
 `deploy-nginx` does the following Kubernetes operations:
 
-* Creates the namespace `ingress-nginx`
-* Create a DaemonSet, which instantiates a nginx controller on every node.
-* Creates and configures a nginx controller admission and the necessary roles for using it inside the cluster.
+* Create the namespace `ingress-nginx`
+* Create a Deployment with the Load Balancer.
+* Create and configures a Nginx controller admission and the necessary roles for using it inside the cluster.
+* Assign an external IP to the Load Balancer.
 
 ## Configuring LDAP and user credentials
 
@@ -158,9 +170,11 @@ To ensure that Matrix is running, access it by a web browser, you should see the
 
 ![](./img/matrix_running.png)
 
-### E-commerce
+### Web Server
+#### Wiki
+#### E-commerce
 
-### Mail
+### Mail Server
 
 
 ## Monitoring your cluster
@@ -226,3 +240,6 @@ After nginx is deployed, each service will have an URL assigned:
 - [kero.matrix-synapse.io](kero.matrix-synapse.io) - Matrix-synapse chat server
 - [kero.chat.io](http://kero.chat.io/) - Element chat client
 - [kero.vnc-<username>.io](kero.vnc-<username>.io) - Remote Desktop for user with username `username`
+- [kero.wiki.io](kero.wiki.io) - KERO Wiki
+- [kero.ecommerce.io](kero.ecommerce.io) - KERO Ecommerce
+- [kero.mail.io](kero.mail.io) - Mail client
