@@ -171,8 +171,28 @@ To ensure that Matrix is running, access it by a web browser, you should see the
 ![](./img/matrix_running.png)
 
 ### Web Server
+
+In order to deploy the web server use the command `deploy-webserver` that will start it with two web pages: KeroWiki and KeroShop.
+
 #### Wiki
+
+To ensure that the wiki web page is running, access it by a web browser. You should see the following screen:
+
+![](./img/wiki.png)
+
 #### E-commerce
+
+To ensure that the e-commerce web page is running, access it by a web browser. You should see the following screen:
+
+![](./img/shop_first.png)
+
+Since it is the first time you access, you must create an admin user. After complete the form, you should see the following screen:
+
+![](./img/shop_admin_panel.png)
+
+Accessing again to the root url, you can see the web page:
+
+![](./img/shop.png)
 
 ### Mail Server
 
