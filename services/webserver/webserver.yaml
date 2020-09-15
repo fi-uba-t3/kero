@@ -69,29 +69,31 @@ kind: Ingress
 metadata:
   name: webserver-ingress
   annotations:
-    kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/add-base-url: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    cert-manager.io/cluster-issuer: "letsencrypt-staging" # Change later to "letsencrypt-production"
+    # UNCOMMENT IF THERE ARE CERTS
+    # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.class: "nginx"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # cert-manager.io/cluster-issuer: "letsencrypt-staging" # Change later to "letsencrypt-production"
 spec:
   rules:
-  - host: wiki.kero.fi.uba.ar
+  - host: kero.wiki.io
     http:
       paths:
       - backend:
           serviceName: webserver
           servicePort: 80
-  - host: ecommerce.kero.fi.uba.ar #kerotestbis.ddns.net
+  - host: kero.ecommerce.io
     http:
       paths:
       - backend:
           serviceName: webserver
           servicePort: 80
-  tls:
-    - hosts:
-        - wiki.kero.fi.uba.ar
-      secretName: wiki.tls
-    - hosts:
-        - ecommerce.kero.fi.uba.ar
-      secretName: ecommerce.tls
+  # UNCOMMENT IF THERE ARE CERTS
+  # tls:
+  #   - hosts:
+  #       - wiki.kero.fi.uba.ar
+  #     secretName: wiki.tls
+  #   - hosts:
+  #       - ecommerce.kero.fi.uba.ar
+  #     secretName: ecommerce.tls
