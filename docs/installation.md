@@ -196,6 +196,34 @@ Accessing again to the root url, you can see the web page:
 
 ### Mail Server
 
+To use the mail service, run the `deploy-mail` command on any KERO machine. To ensure that the mail server is running, access it by a web browser. You should see the following screen:
+
+![](./img/mail.png)
+
+Since it is the first time you access, you must configure the mail client. In order to configure it, go to `/?admin`. You should see the following screen:
+
+![](./img/mail_admin.png)
+
+Complete the login form with the default values: `Login: admin`, `Password: 12345`. Once logged in, go to `Security` tab to change the password. You should see the following screen:
+
+![](./img/mail_admin_security.png)
+
+In order to configure the correct domain, go to `Domains` tab. You should see the following screen:
+
+![](./img/mail_admin_domains.png)
+
+Click on `Add Domain`. Add the domain name and write `localhost` in IMAP and SMTP. Click on `Test` to verify the configuration:
+
+* If both IMAP and SMTP are in green it is well configured. 
+* If one of them is in red, check the configuration or wait a while for the server to finish booting.
+
+You should see the following screen:
+
+![](./img/mail_fiuba.png)
+
+Finally click on `Add`. Now you can login in the main page with your LDAP email and password. Your email should be `username@domain` and your password is the same as LDAP. Once logged in, you can use the mail client.
+
+![](./img/mail_client.png)
 
 ## Monitoring your cluster
 
