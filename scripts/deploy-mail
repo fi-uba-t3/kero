@@ -1,0 +1,18 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/mail/mail-deployment.yaml | kubectl apply -f -
+
+MAIL_STATUS=$(kubectl get pods | grep mailserver | awk '{print $3}')
+while [ $MAIL_STATUS != "Running" ]; do
+    echo "Waiting for mail server deployment (status: ${MAIL_STATUS})"
+    sleep 6
+    MAIL_STATUS=$(kubectl get pods | grep mailserver | awk '{print $3}')
+done
+
+MAIL_PODNAME=$(kubectl get pods | grep mailserver | awk '{print $1}')
+sudo kubectl exec $MAIL_PODNAME -c docker-mailserver -- mkdir /var/mail/fiuba.com/
+sudo kubectl exec $MAIL_PODNAME -c docker-mailserver -- chmod -R a+rwxt /var/mail/
+
+echo "Mailserver is now running"

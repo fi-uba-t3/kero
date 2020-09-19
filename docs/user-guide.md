@@ -9,20 +9,18 @@ This guide is aimed for KERO final users and provides information on how to acce
 Add the following lines to your `/etc/hosts` files
 
 ```
-ip1 kero.kero-admin.io
-ip1 kero.ldap-admin.io
-ip1 kero.desk-spawner.io
-ip1 kero.vnc-<username>.io
-.
-.
-.
-ipn kero.kero-admin.io
-ipn kero.ldap-admin.io
-ipn kero.desk-spawner.io
-ipn kero.vnc-<username>.io
+external-ip kero.kero-admin.io
+external-ip kero.ldap-admin.io
+external-ip kero.desk-spawner.io
+external-ip kero.matrix-synapse.io
+external-ip kero.chat.io
+external-ip kero.vnc-<username>.io
+external-ip kero.mail.io
+external-ip kero.wiki.io
+external-ip kero.ecommerce.io
 ```
 
-Where ip1...ipn are the IPs for the KERO cluster.
+Where external-ip is the external IP for the KERO cluster load balancer.
 
 ## Remote desktop service
 
@@ -50,14 +48,15 @@ To log in to your desktop, follow these steps:
 
 When you are done using your desktop, just execute the command `destroy-vnc-server` with your username and password.
 
-### How to use personal and shared storage
+### How to use personal, group and shared storage
 
-* Your **personal storage** is located under _/home/users/`<your-VNC-username>`/_ 
+* Your **personal storage** is located under _/home/users/`<your-VNC-username>`/_
+* Your **group storage** is located under _/home/users/`<your-group-name>`_ 
 * The **shared storage** is located under _/mnt/shared/_
 
-Feel free to save your personal data on your **personal storage**, and communal data on **shared storage**.
+Feel free to save your personal data on your **personal storage**, group data on **group storage** and communal data on **shared storage**.
 
-Every other directory is ephemeral storage. This means that data saved outside personal or shared storage will **not** be persisted after a reboot.
+Every other directory is ephemeral storage. This means that data saved outside personal, group or shared storage will **not** be persisted after a reboot.
 
 ### Accessing the cluster from outside
 
@@ -78,6 +77,22 @@ curl  -X POST _TODO_ -d '{"user": "abarbetta", "password": "password"}' -H "Cont
 
 or use the script `vnc-connect` providing the desktop spawner URL and your credentials.
 
-2. Navigate to the URL the desktop spawner service gave you to log in and use your desktop.
+2. Navigate to the URL kero.vnc-`<your-VNC-username>`.io to log in and use your desktop.
 
 3. When you are finished, do a DELETE against the desktop spawner (also with your credentials) to shutdown your desktop. You can also opt to use the script `vnc-disconnect` providing the desktop spawner URL and your credentials.
+
+## Chat service
+
+To use the chat service, navigate to the URL of the chat client.
+
+![](./img/chat_welcome.png)
+
+Then click on _Sign In_.
+
+![](./img/chat_login.png)
+
+Change the Matrix server to the KERO one.
+
+![](./img/chat_login_2.png)
+
+And lastly ingress with the username provided by your KERO cluster administrator.

@@ -1,0 +1,7 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/mail/mail-deployment.yaml | kubectl delete -f -
+
+echo "Mailserver deleted"

@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: riot-web
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: riot-web
+  template:
+    metadata:
+      labels:
+        application: riot-web
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      containers:
+      - name: riot-web
+        image: bubuntux/riot-web:v1.7.2
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: /etc/riot-web/config.json
+            name: config
+        resources:
+          limits:
+            ephemeral-storage: 150Mi
+          requests:
+            ephemeral-storage: 100Mi
+      volumes:
+      - name: config
+        hostPath:
+          path: /vagrant/services/matrix/riot-config.json
+          type: File
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    application: riot-web
+  name: riot-web-svc
+  namespace: default
+spec:
+  externalName: riot-web-svc
+  type: NodePort
+  ports:
+  - name: riot-web-tcp
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    application: riot-web
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+ name: riot-web-ingress
+ annotations:
+   nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+ rules:
+ - host: kero.chat.io
+   http:
+     paths:
+     - path: /
+       backend:
+         serviceName: riot-web-svc
+         servicePort: 80
