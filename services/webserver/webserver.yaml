@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver
+  labels:
+    app: webserver
+spec:
+  selector:
+    app: webserver
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  clusterIP: 10.96.80.80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+      - name: webserver
+        image: kajachuan/kero-webserver
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: data
+            mountPath: /var/www/wiki
+            subPath: wiki
+          - name: data
+            mountPath: /var/www/ecommerce
+            subPath: ecommerce
+          - name: conf
+            mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: webserver-storage
+        - name: conf
+          hostPath:
+            path: $KERO_HOME/services/webserver/conf
+            type: Directory
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: webserver-storage
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: webserver-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+    # UNCOMMENT IF THERE ARE CERTS
+    # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.class: "nginx"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # cert-manager.io/cluster-issuer: "letsencrypt-staging" # Change later to "letsencrypt-production"
+spec:
+  rules:
+  - host: kero.wiki.io
+    http:
+      paths:
+      - backend:
+          serviceName: webserver
+          servicePort: 80
+  - host: kero.ecommerce.io
+    http:
+      paths:
+      - backend:
+          serviceName: webserver
+          servicePort: 80
+  # UNCOMMENT IF THERE ARE CERTS
+  # tls:
+  #   - hosts:
+  #       - wiki.kero.fi.uba.ar
+  #     secretName: wiki.tls
+  #   - hosts:
+  #       - ecommerce.kero.fi.uba.ar
+  #     secretName: ecommerce.tls

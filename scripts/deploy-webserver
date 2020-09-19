@@ -1,0 +1,25 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/webserver/webserver.yaml | kubectl apply -f -
+
+WEBSERVER_STATUS=$(kubectl get pods | grep webserver | awk '{print $3}')
+while [ $WEBSERVER_STATUS != "Running" ]; do
+    echo "Waiting for webserver deployment (status: ${WEBSERVER_STATUS})"
+    sleep 5
+    WEBSERVER_STATUS=$(kubectl get pods | grep webserver | awk '{print $3}')
+done
+
+PODNAME=$(kubectl get pods | grep webserver | awk '{print $1}')
+
+echo "Copying files to wiki..."
+(sudo kubectl exec -i $PODNAME -- /bin/bash) <<< 'cp -r /wiki/* /var/www/wiki/'
+
+echo "Copying files to ecommerce..."
+(sudo kubectl exec -i $PODNAME -- /bin/bash) <<< 'cp -r /ecommerce/* /var/www/ecommerce/'
+
+echo "Changing owner..."
+sudo kubectl exec $PODNAME -- chown -R www-data:www-data /var/www/
+
+echo "Webserver is now Running"
