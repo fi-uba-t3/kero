@@ -8,8 +8,8 @@ echo "Pulling all docker images. This process could take some minutes..."
 sudo docker pull juanfresia/taller3-test-vnc
 
 # GlusterFS images (shared file system service)
-sudo docker pull gluster/gluster-centos:gluster4u1_centos7
-sudo docker pull quay.io/external_storage/glusterfs-simple-provisioner:v2.1.0-k8s1.11
+sudo docker pull gluster/gluster-centos:gluster-centos:gluster4u1_centos7
+sudo docker pull quay.io/external_storage/glusterfs-simple-provisioner:latest
 
 # LDAP images (users CRUD service)
 sudo docker pull osixia/phpldapadmin:0.8.0

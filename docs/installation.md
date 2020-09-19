@@ -79,15 +79,27 @@ node-1$ deploy-glfs 3 3
 * Bind the necessary ServiceAccount / ClusterRole
 * Create a GlusterFS simple provisioner
 
-## Deploying nginx
+## Deploying MetalLB
 
-To deploy nginx, invoke the command `deploy-nginx` from any machine on the KERO cluster.
+To deploy MetalLB, invoke the command `deploy-metallb` from any machine on the KERO cluster.
+
+`deploy-metallb` does the following Kubernetes operations:
+
+* Create the namespace `metallb-system`
+* Create a Deployment `controller`, which handles IP address assignments.
+* Create a DaemonSet `speaker`, which speakes the protocol(s) to make the services reachable.
+* Bind the service accounts for the controller and speaker, along with the RBAC permissions that the components need to function.
+
+## Deploying Nginx
+
+With MetalLB already setted, you can now deploy the Nginx Load Balancer. In order to do that, run the command `deploy-nginx` from any machine on the KERO cluster.
 
 `deploy-nginx` does the following Kubernetes operations:
 
-* Creates the namespace `ingress-nginx`
-* Create a DaemonSet, which instantiates a nginx controller on every node.
-* Creates and configures a nginx controller admission and the necessary roles for using it inside the cluster.
+* Create the namespace `ingress-nginx`
+* Create a Deployment with the Load Balancer.
+* Create and configures a Nginx controller admission and the necessary roles for using it inside the cluster.
+* Assign an external IP to the Load Balancer.
 
 ## Configuring LDAP and user credentials
 
@@ -147,6 +159,72 @@ A success message should appear and the user should be deleted.
 
 ![](./img/ldap_delete_success.png)
 
+## Deploying the Kero services
+
+With LDAP and the storage in place, it is possible to deploy the other services that Kero provides.
+
+### Chat
+
+To use the chat service, it is necessary to deploy the Matrix-synapse server and the Element client. To do so, use the command `deploy-chat` that will start both services.
+To ensure that Matrix is running, access it by a web browser, you should see the following screen:
+
+![](./img/matrix_running.png)
+
+### Web Server
+
+In order to deploy the web server use the command `deploy-webserver` that will start it with two web pages: KeroWiki and KeroShop.
+
+#### Wiki
+
+To ensure that the wiki web page is running, access it by a web browser. You should see the following screen:
+
+![](./img/wiki.png)
+
+#### E-commerce
+
+To ensure that the e-commerce web page is running, access it by a web browser. You should see the following screen:
+
+![](./img/shop_first.png)
+
+Since it is the first time you access, you must create an admin user. After complete the form, you should see the following screen:
+
+![](./img/shop_admin_panel.png)
+
+Accessing again to the root url, you can see the web page:
+
+![](./img/shop.png)
+
+### Mail Server
+
+To use the mail service, run the `deploy-mail` command on any KERO machine. To ensure that the mail server is running, access it by a web browser. You should see the following screen:
+
+![](./img/mail.png)
+
+Since it is the first time you access, you must configure the mail client. In order to configure it, go to `/?admin`. You should see the following screen:
+
+![](./img/mail_admin.png)
+
+Complete the login form with the default values: `Login: admin`, `Password: 12345`. Once logged in, go to `Security` tab to change the password. You should see the following screen:
+
+![](./img/mail_admin_security.png)
+
+In order to configure the correct domain, go to `Domains` tab. You should see the following screen:
+
+![](./img/mail_admin_domains.png)
+
+Click on `Add Domain`. Add the domain name and write `localhost` in IMAP and SMTP. Click on `Test` to verify the configuration:
+
+* If both IMAP and SMTP are in green it is well configured. 
+* If one of them is in red, check the configuration or wait a while for the server to finish booting.
+
+You should see the following screen:
+
+![](./img/mail_fiuba.png)
+
+Finally click on `Add`. Now you can login in the main page with your LDAP email and password. Your email should be `username@domain` and your password is the same as LDAP. Once logged in, you can use the mail client.
+
+![](./img/mail_client.png)
+
 ## Monitoring your cluster
 
 An additional monitoring service is provided via the Kubernetes Web UI Dashboard. In order to set up this dashboard, simply run the `deploy-dashboard` command. 
@@ -163,11 +241,53 @@ Once on the dashboard, you can monitor all pods, services and deployments on the
 
 ![](./img/dashboard.png)
 
+## Administering the KERO system
+
+It is possible to do some operations, like creating groups and users or visualizing the state of the pods and services of the KERO system by the KERO Admin dashboard. To use it, you can deploy it using the `deploy-kero-adm` command.
+
+To access the KERO Admin, you will land on the following login screen:
+
+![](./img/kero_login.png)
+
+The login information will be the LDAP admin account created when configuring that service.
+
+![](./img/kero_login_success.png)
+
+It is possible to create or visualize the existing users.
+
+![](./img/kero_users.png)
+
+As well as groups.
+
+![](./img/kero_groups.png)
+
+To get information on the status of the pods running on the KERO system simply click _Estado de los pods_:
+
+![](./img/kero_pods_status.png)
+
+And for the services _Estado de los servicios_:
+
+![](./img/kero_services_status.png)
+
 ## Remote desktop service
 
-To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the desktop spawner API from a Kero cluster machine just invoke the command `deploy-desktop-spawner`.
+To enable the remote desktop service, you will need a service that deploys vnc desktops on demand. The Desktop spawner API provides endpoints to deploy and destroy a vnc server remotely. To deploy the desktop spawner API from a KERO cluster machine just invoke the command `deploy-desktop-spawner`.
 
 `deploy-desktop-spawner` does the following Kubernetes operations:
 * Creates a Deployment, which instantiates a Desktop spawner API server on a node.
 * Waits for the desktop spawner API server to be running and ready.
 * Return the new desktop spawner service IP.
+
+## Accesing the services
+
+After nginx is deployed, each service will have an URL assigned:
+
+- [kero.kero-admin.io](kero.kero-admin.io) - KERO Admin
+- [kero.ldap-admin.io](kero.ldap-admin.io) - Ldap Admin
+- [kero.desk-spawner.io](kero.desk-spawner.io) - KERO Desktop Spawner
+- [kero.matrix-synapse.io](kero.matrix-synapse.io) - Matrix-synapse chat server
+- [kero.chat.io](http://kero.chat.io/) - Element chat client
+- [kero.vnc-<username>.io](kero.vnc-<username>.io) - Remote Desktop for user with username `username`
+- [kero.wiki.io](kero.wiki.io) - KERO Wiki
+- [kero.ecommerce.io](kero.ecommerce.io) - KERO Ecommerce
+- [kero.mail.io](kero.mail.io) - Mail client
