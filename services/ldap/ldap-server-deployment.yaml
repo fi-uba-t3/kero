@@ -35,7 +35,7 @@ spec:
           value: ${DOMAIN_NAME}
         - name: LDAP_ORGANISATION
           value: FIUBA
-        image: osixia/openldap:1.2.4
+        image: kajachuan/openldap-postfix-book
         ports:
         - containerPort: 389
         - containerPort: 636
@@ -105,18 +105,17 @@ spec:
     requests:
       storage: 100Mi
 ---
-apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
- name: ldap-admin-ingress
- annotations:
-   nginx.ingress.kubernetes.io/add-base-url: "true"
+  name: ldap-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/add-base-url: "true"
 spec:
- rules:
- - host: kero.ldap-admin.io
-   http:
-     paths:
-     - path: /
-       backend:
-         serviceName: ldap-svc
-         servicePort: 80
+  rules:
+  - host: kero.ldap-admin.io
+    http:
+      paths:
+      - backend:
+          serviceName: ldap-svc
+          servicePort: 80

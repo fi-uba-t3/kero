@@ -22,5 +22,5 @@ sudo docker pull juanfresia/desk-spawner:0.0.5
 sudo docker pull juanfresia/node-stopper:0.0.2
 
 # Kero dashboard
-sudo docker pull joaquintz/kero_adm:0.09
+sudo docker pull joaquintz/kero_adm:0.11
 echo "Pulling process completed!"

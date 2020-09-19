@@ -1,0 +1,231 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mailserver.env.config
+  labels:
+    app: mailserver
+data:
+  ENABLE_SPAMASSASSIN: "1"
+  SPAMASSASSIN_SPAM_TO_INBOX: "1"
+  ENABLE_CLAMAV: "1"
+  ENABLE_FAIL2BAN: "1"
+  ENABLE_POSTGREY: "1"
+  ONE_DIR: "1"
+  DMS_DEBUG: "0"
+  ENABLE_LDAP: "1"
+  LDAP_SERVER_HOST: 10.96.100.100
+  LDAP_SEARCH_BASE: ou=People,dc=fiuba,dc=com
+  LDAP_BIND_DN: cn=admin,dc=fiuba,dc=com
+  LDAP_BIND_PW: admin
+  LDAP_QUERY_FILTER_USER: (&(mail=%s)(mailEnabled=TRUE))
+  LDAP_QUERY_FILTER_GROUP: (&(mailGroupMember=%s)(mailEnabled=TRUE))
+  LDAP_QUERY_FILTER_ALIAS: (|(&(mailAlias=%s)(objectClass=PostfixBookMailForward))(&(mailAlias=%s)(objectClass=PostfixBookMailAccount)(mailEnabled=TRUE)))
+  LDAP_QUERY_FILTER_DOMAIN: (|(&(mail=*@%s)(objectClass=PostfixBookMailAccount)(mailEnabled=TRUE))(&(mailGroupMember=*@%s)(objectClass=PostfixBookMailAccount)(mailEnabled=TRUE))(&(mailalias=*@%s)(objectClass=PostfixBookMailForward)))
+  DOVECOT_PASS_FILTER: (&(objectClass=PostfixBookMailAccount)(uid=%n))
+  DOVECOT_USER_FILTER: (&(objectClass=PostfixBookMailAccount)(uid=%n))
+  ENABLE_SASLAUTHD: "1"
+  SASLAUTHD_MECHANISMS: ldap
+  SASLAUTHD_LDAP_SERVER: 10.96.100.100
+  SASLAUTHD_LDAP_BIND_DN: cn=admin,dc=fiuba,dc=com
+  SASLAUTHD_LDAP_PASSWORD: admin
+  SASLAUTHD_LDAP_SEARCH_BASE: ou=People,dc=fiuba,dc=com
+  SASLAUTHD_LDAP_FILTER: (&(uid=%U)(objectClass=posixAccount))
+  POSTMASTER_ADDRESS: kcajachuan@fi.uba.ar
+  POSTFIX_MESSAGE_SIZE_LIMIT: "100000000"
+  DEFAULT_RELAY_HOST: "[smtp.sendgrid.net]:25"
+  RELAY_HOST: smtp.sendgrid.net
+  RELAY_PORT: "25"
+  RELAY_USER: apikey
+  RELAY_PASSWORD: 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
+  # UNCOMMENT IF THERE ARE CERTS
+  # SSL_TYPE: manual
+  # SSL_CERT_PATH: /etc/ssl/mailserver/tls.crt
+  # SSL_KEY_PATH: /etc/ssl/mailserver/tls.key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailserver
+  labels:
+    app: mailserver
+spec:
+  selector:
+    app: mailserver
+  ports:
+    - name: client
+      port: 80
+      targetPort: http
+    - name: smtp
+      port: 25
+      targetPort: smtp
+    - name: imap
+      port: 143
+      targetPort: imap
+    - name: smtp-secure
+      port: 465
+      targetPort: smtp-secure
+    - name: smtp-auth
+      port: 587
+      targetPort: smtp-auth
+    - name: imap-secure
+      port: 993
+      targetPort: imap-secure
+  clusterIP: 10.98.100.100
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailserver
+  template:
+    metadata:
+      labels:
+        app: mailserver
+    spec:
+      containers:
+      - name: rainloop
+        image: solidnerd/rainloop
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+      - name: docker-mailserver
+        image: tvial/docker-mailserver:stable
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: config
+            subPath: postfix-accounts.cf
+            mountPath: /tmp/docker-mailserver/postfix-accounts.cf
+            readOnly: true
+          #- name: config
+          #  subPath: postfix-main.cf
+          #  mountPath: /tmp/docker-mailserver/postfix-main.cf
+          #  readOnly: true
+          - name: config
+            subPath: postfix-virtual.cf
+            mountPath: /tmp/docker-mailserver/postfix-virtual.cf
+            readOnly: true
+          - name: config
+            subPath: fetchmail.cf
+            mountPath: /tmp/docker-mailserver/fetchmail.cf
+            readOnly: true
+          - name: config
+            subPath: dovecot.cf
+            mountPath: /tmp/docker-mailserver/dovecot.cf
+            readOnly: true
+          #- name: config
+          #  subPath: user1.example.com.dovecot.sieve
+          #  mountPath: /tmp/docker-mailserver/user1@example.com.dovecot.sieve
+          #  readOnly: true
+          #- name: tmp-files
+          #  subPath: user-patches.sh
+          #  mountPath: /tmp/docker-mailserver/user-patches.sh
+          - name: config
+            subPath: SigningTable
+            mountPath: /tmp/docker-mailserver/opendkim/SigningTable
+            readOnly: true
+          - name: config
+            subPath: KeyTable
+            mountPath: /tmp/docker-mailserver/opendkim/KeyTable
+            readOnly: true
+          - name: config
+            subPath: TrustedHosts
+            mountPath: /tmp/docker-mailserver/opendkim/TrustedHosts
+            readOnly: true
+          - name: opendkim-keys
+            mountPath: /tmp/docker-mailserver/opendkim/keys
+            readOnly: true
+          - name: data
+            mountPath: /var/mail
+            subPath: data
+          - name: data
+            mountPath: /var/mail-state
+            subPath: state
+          - name: data
+            mountPath: /var/log/mail
+            subPath: log
+          # UNCOMMENT IF THERE ARE CERTS
+          # - name: tls
+          #   mountPath: /etc/ssl/mailserver
+          #   readOnly: true
+        ports:
+          - name: smtp
+            containerPort: 25
+            protocol: TCP
+          - name: imap
+            containerPort: 143
+            protocol: TCP
+          - name: smtp-secure
+            containerPort: 465
+            protocol: TCP
+          - name: smtp-auth
+            containerPort: 587
+            protocol: TCP
+          - name: imap-secure
+            containerPort: 993
+            protocol: TCP
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_PTRACE
+        envFrom:
+          - configMapRef:
+              name: mailserver.env.config
+      hostname: fiuba
+      subdomain: mail
+      volumes:
+        - name: config
+          emptyDir: {}
+        - name: opendkim-keys
+          emptyDir: {}
+        - name: data
+          persistentVolumeClaim:
+            claimName: mail-storage
+        # UNCOMMENT IF THERE ARE CERTS
+        # - name: tls
+        #   secret:
+        #     secretName: mailserver.tls
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mail-storage
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "glusterfs-simple"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: mailserver-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+    # UNCOMMENT IF THERE ARE CERTS
+    # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.class: "nginx"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # cert-manager.io/cluster-issuer: "letsencrypt-staging" # Change later to "letsencrypt-production"
+spec:
+  rules:
+  - host: kero.mail.io
+    http:
+      paths:
+      - backend:
+          serviceName: mailserver
+          servicePort: 80
+  # UNCOMMENT IF THERE ARE CERTS
+  # tls:
+  #   - hosts:
+  #       - kero.mail.io # Change later
+  #     secretName: mailserver.tls

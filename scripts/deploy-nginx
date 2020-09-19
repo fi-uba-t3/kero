@@ -4,15 +4,12 @@ set +x
 
 envsubst < $KERO_HOME/services/nginx/nginx-deployment.yaml | kubectl apply -f -
 
-NODE_COUNT="$(kubectl get nodes --no-headers | awk '{print $3}' | wc -l)"
-
-count="$(kubectl get pods --no-headers --namespace=ingress-nginx | grep ingress-nginx-controller  | awk '{print $3}' | grep Running | wc -l)"
-while [ "$count" -lt "$NODE_COUNT" ]; do
-  echo "Waiting for nginx: $count / $NODE_COUNT"
-  sleep 5
-  count="$(kubectl get pods --no-headers --namespace=ingress-nginx | grep ingress-nginx-controller | sed -e s/[\\n\\r]//g | awk '{print $3}' | grep -o Running | wc -l)"
+NGINX_STATUS=$(kubectl get pods -n ingress-nginx | grep ingress-nginx-controller | awk '{print $3}')
+while [ $NGINX_STATUS != "Running" ]; do
+    echo "Waiting for Nginx deployment (status: ${NGINX_STATUS})"
+    sleep 5
+    NGINX_STATUS=$(kubectl get pods -n ingress-nginx | grep ingress-nginx-controller | awk '{print $3}')
 done
 
-kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
-
-echo "nginx is now Running: $count / $NODE_COUNT"
+NGINX_IP=$(kubectl get svc -n ingress-nginx | grep LoadBalancer | awk '{print $4}')
+echo "Connect to Nginx Load Balancer on ${NGINX_IP}"
