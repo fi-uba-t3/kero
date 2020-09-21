@@ -1,6 +1,9 @@
 import ldap
 import ldap.modlist
 import logging
+import hashlib
+import base64
+
 def s2b(string):
     return bytes(string, "utf-8")
 
@@ -121,6 +124,12 @@ class LDAPManager:
         if len(existing_users):
             max_user_id = max([int(user["userid"][0]) for user in existing_users])
 
+        # MD5 hash password
+        # Optional for compatibility. Should be changed to SHA in production.
+        md5=hashlib.md5()
+        md5.update(s2b(password))
+        password = b'{MD5}'+ base64.b64encode(md5.digest())
+
         modlist = {
             "objectClass": [b"inetOrgPerson", b"posixAccount", b"PostfixBookMailAccount", b"top"],
             "uid": [s2b(username)],
@@ -129,7 +138,7 @@ class LDAPManager:
             "cn": [s2b(f"{first_name} {last_name}")],
             "displayName": [s2b(f"{first_name} {last_name}")],
             "uidNumber": [s2b(str(max_user_id+1))],
-            "userPassword": [s2b(password)],
+            "userPassword": [password],
             "gidNumber": [s2b(str(group_number))],
             "loginShell": [s2b("/bin/bash")],
             "homeDirectory": [s2b(f"/home/{username}")],

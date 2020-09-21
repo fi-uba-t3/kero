@@ -75,14 +75,14 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
       - name: kero-adm
-        image: joaquintz/kero_adm:0.11
+        image: joaquintz/kero_adm:0.12
         ports:
         - containerPort: 5000
         env:
         - name: LDAP_IP
           value: 10.96.100.100
         - name: LDAP_DN
-          value: fiuba.com
+          value: fiuba.com #kero.fi.uba.ar
         - name: KUBECONFIG
           value: /etc/kubernetes/admin.conf
         volumeMounts:
