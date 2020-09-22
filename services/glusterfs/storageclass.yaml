@@ -8,5 +8,5 @@ reclaimPolicy: Retain
 parameters:
   forceCreate: "true"
   volumeType: "replica 3"
-  brickrootPaths: "10.0.0.2:/etc/kubernetes/bricks/brick0,10.0.0.3:/etc/kubernetes/bricks/brick0,10.0.0.4:/etc/kubernetes/bricks/brick0,10.0.0.5:/etc/kubernetes/bricks/brick0,10.0.0.2:/etc/kubernetes/bricks/brick1,10.0.0.3:/etc/kubernetes/bricks/brick1,10.0.0.4:/etc/kubernetes/bricks/brick1,10.0.0.5:/etc/kubernetes/bricks/brick1,10.0.0.2:/etc/kubernetes/bricks/brick2,10.0.0.3:/etc/kubernetes/bricks/brick2,10.0.0.4:/etc/kubernetes/bricks/brick2,10.0.0.5:/etc/kubernetes/bricks/brick2"
+  brickrootPaths: "192.168.0.102:/etc/kubernetes/bricks/brick0,192.168.0.103:/etc/kubernetes/bricks/brick0,192.168.0.104:/etc/kubernetes/bricks/brick0,192.168.0.105:/etc/kubernetes/bricks/brick0,192.168.0.102:/etc/kubernetes/bricks/brick1,192.168.0.103:/etc/kubernetes/bricks/brick1,192.168.0.104:/etc/kubernetes/bricks/brick1,192.168.0.105:/etc/kubernetes/bricks/brick1,192.168.0.102:/etc/kubernetes/bricks/brick2,192.168.0.103:/etc/kubernetes/bricks/brick2,192.168.0.104:/etc/kubernetes/bricks/brick2,192.168.0.105:/etc/kubernetes/bricks/brick2"
 

@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
     node_disks = node['disks']
 
     config.vm.define name do |box|
-      box.vm.network "private_network", ip: node_ip
+      box.vm.network "public_network", ip: node_ip
       box.vm.hostname = name
 
       box.vm.provider "virtualbox" do |vb|
@@ -69,14 +69,14 @@ Vagrant.configure(2) do |config|
         end
       end
 
-#      box.vm.provision "shell" do |s|
-#        s.env = {
-#            "NODE_IP"   => node_ip,
-#            "NODE_ROLE" => node_role
-#        }
-#        s.privileged = true
-#        s.path = "provision.sh"
-#      end
+      box.vm.provision "shell" do |s|
+        s.env = {
+            "NODE_IP"   => node_ip,
+            "NODE_ROLE" => node_role
+        }
+        s.privileged = true
+        s.path = "provision.sh"
+      end
 
     end
   end

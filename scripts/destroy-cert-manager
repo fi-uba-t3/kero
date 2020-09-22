@@ -1,0 +1,8 @@
+#! /bin/bash
+
+set +x
+
+# envsubst < $KERO_HOME/services/cert-manager/cert-manager-legacy.yaml | kubectl delete -f -
+envsubst < $KERO_HOME/services/cert-manager/cert-manager.yaml | kubectl delete -f -
+
+echo "cert-manager deleted"

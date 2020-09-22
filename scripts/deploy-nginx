@@ -1,0 +1,15 @@
+#! /bin/bash
+
+set +x
+
+envsubst < $KERO_HOME/services/nginx/nginx-deployment.yaml | kubectl apply -f -
+
+NGINX_STATUS=$(kubectl get pods -n ingress-nginx | grep ingress-nginx-controller | awk '{print $3}')
+while [ $NGINX_STATUS != "Running" ]; do
+    echo "Waiting for Nginx deployment (status: ${NGINX_STATUS})"
+    sleep 5
+    NGINX_STATUS=$(kubectl get pods -n ingress-nginx | grep ingress-nginx-controller | awk '{print $3}')
+done
+
+NGINX_IP=$(kubectl get svc -n ingress-nginx | grep LoadBalancer | awk '{print $4}')
+echo "Connect to Nginx Load Balancer on ${NGINX_IP}"

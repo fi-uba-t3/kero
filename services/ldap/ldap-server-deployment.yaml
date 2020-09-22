@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ldap
@@ -6,6 +6,9 @@ metadata:
     io.kompose.service: ldap-admin
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      application: ldap
   template:
     metadata:
       labels:
@@ -13,13 +16,13 @@ spec:
     spec:
       terminationGracePeriodSeconds: 5
       containers:
-      - name: ldap-admin 
+      - name: ldap-admin
         env:
         - name: PHPLDAPADMIN_HTTPS
           value: "false"
         - name: PHPLDAPADMIN_LDAP_HOSTS
           value: 127.0.0.1
-        image: osixia/phpldapadmin
+        image: osixia/phpldapadmin:0.8.0
         ports:
         - containerPort: 80
       - name: ldap-host
@@ -32,7 +35,7 @@ spec:
           value: ${DOMAIN_NAME}
         - name: LDAP_ORGANISATION
           value: FIUBA
-        image: osixia/openldap
+        image: kajachuan/openldap-postfix-book
         ports:
         - containerPort: 389
         - containerPort: 636
@@ -58,6 +61,7 @@ metadata:
   name: ldap-svc
 spec:
   externalName: ldap-svc
+  type: NodePort
   ports:
   - name: admin-panel-tcp
     protocol: TCP
@@ -100,3 +104,18 @@ spec:
   resources:
     requests:
       storage: 100Mi
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ldap-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+  rules:
+  - host: kero.ldap-admin.io
+    http:
+      paths:
+      - backend:
+          serviceName: ldap-svc
+          servicePort: 80

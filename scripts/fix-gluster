@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set +x
+
+echo "Adding nodes to /etc/hosts"
+
+hosts="
+10.0.0.2 node-1\n
+10.0.0.3 node-2\n
+10.0.0.4 node-3\n
+10.0.0.5 node-4\n
+10.0.0.6 node-5\n
+10.0.0.7 node-6\n"""
+
+for i in {1,2,3,4,5,6}; do
+    node=node-$i
+    vagrant ssh $node -c " \
+        printf $hosts | sudo tee -a /etc/hosts; \
+        uniq /etc/hosts | sudo tee /etc/hosts;"
+done
