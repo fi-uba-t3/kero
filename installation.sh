@@ -49,7 +49,7 @@ case $1 in
     sudo KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f $KERO_HOME/services/kuberouter/kubeadm-kuberouter.yaml
 
     # Leave instructions to other masters and nodes on how to join the cluster.
-    cat $KERO_HOME/cache/kubeadm-init.log | grep "control" -B2 > $KERO_HOME/cache/join-master.sh
+    cat $KERO_HOME/cache/kubeadm-init.log | grep "\-\-certificate-key" -B2 > $KERO_HOME/cache/join-master.sh
     tail -2 $KERO_HOME/cache/kubeadm-init.log > $KERO_HOME/cache/join.sh
     config_kubectl
     K8S_SVC_IP=$(sudo kubectl get svc | grep kubernetes | awk '{print $3}')
